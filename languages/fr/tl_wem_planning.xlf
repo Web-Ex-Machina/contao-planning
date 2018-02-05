@@ -1,0 +1,211 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/wem-contao-planning/languages/en/tl_wem_planning.php" source-language="en" target-language="fr">
+    <body>
+      <trans-unit id="tl_wem_planning.title.0">
+        <source>Title</source>
+        <target>Intitulé</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.title.1">
+        <source>Please enter a planning title.</source>
+        <target>Saisir un titre de planning.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.alias.0">
+        <source>Planning alias</source>
+        <target>Alias de planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.alias.1">
+        <source>The planning alias is a unique reference to the planning item which can be called instead of its numeric ID.</source>
+        <target>Un alias de planning est une référence unique qui remplace l'ID numérique du planning.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.defaultOpenTime.0">
+        <source>Open time</source>
+        <target>Heure d'ouverture</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.defaultOpenTime.1">
+        <source>Please enter the default open time for this planning.</source>
+        <target>Saisir l'heure d'ouverture par défaut du planning.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.defaultCloseTime.0">
+        <source>Close time</source>
+        <target>Heure de fermeture</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.defaultCloseTime.1">
+        <source>Please enter a default close time for this planning.</source>
+        <target>Saisir l'heure de fermeture par défaut du planning.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.canUpdateBooking.0">
+        <source>Can update booking</source>
+        <target>Peut modifier une réservation</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canUpdateBooking.1">
+        <source>Check if you allow booking updates.</source>
+        <target>Cochez si vous autorisez des modifications de réservations.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canUpdateBookingUntil.0">
+        <source>Can update book until</source>
+        <target>Peut modifier une réservation jusqu'à</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canUpdateBookingUntil.1">
+        <source>Please enter the number of hours a booking can be updated before the date.</source>
+        <target>Saisir le nombre d'heures où une réservation peut être modifiée avant sa date.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canUpdateBookingLimit.0">
+        <source>Number of updates</source>
+        <target>Nombre de modifications</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canUpdateBookingLimit.1">
+        <source>Enter the maximum number of updates authorized. Enter 0 to disable limit.</source>
+        <target>Saisir le nombre maximum de modifications autorisé. Saisir 0 pour désactiver la limite.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.canCancelBooking.0">
+        <source>Can cancel booking</source>
+        <target>Peut annuler une réservation</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canCancelBooking.1">
+        <source>Check if you allow booking cancels.</source>
+        <target>Cochez si vous autorisez des annulations de réservations.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canCancelBookingUntil.0">
+        <source>Can cancel book until</source>
+        <target>Peut annuler une réservation jusqu'à</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.canCancelBookingUntil.1">
+        <source>Please enter the number of hours a booking can be canceled before the date.</source>
+        <target>Saisir le nombre d'heures où une réservation peut être annulée avant sa date.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.bookingtypes.0">
+        <source>Booking type</source>
+        <target>Types de réservation</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.bookingtypes.1">
+        <source>Manage booking type for this planning.</source>
+        <target>Gérer les types de réservation pour ce planning.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.slots.0">
+        <source>Slots</source>
+        <target>Créneaux</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.slots.1">
+        <source>Manage planning slots.</source>
+        <target>Gérer les créneaux du planning.</target>
+      </trans-unit>
+      
+      <trans-unit id="tl_wem_planning.protected.0">
+        <source>Protect planning</source>
+        <target>Protéger le planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.protected.1">
+        <source>Show planning to certain member groups only.</source>
+        <target>Afficher le planning à certains groupes de membres seulement.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.groups.0">
+        <source>Allowed member groups</source>
+        <target>Groupes de membres autorisés</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.groups.1">
+        <source>These groups will be able to see the planning.</source>
+        <target>Ces groupes seront en mesure de voir le planning.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.tstamp.0">
+        <source>Revision date</source>
+        <target>Date de révision</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.tstamp.1">
+        <source>Date and time of the latest revision</source>
+        <target>Date et heure de la dernière révision</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.title_legend">
+        <source>Title</source>
+        <target>Intitulé</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.default_legend">
+        <source>Default settings</source>
+        <target>Paramètres par défaut</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.update_legend">
+        <source>Update settings</source>
+        <target>Paramètres de mise à jour</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.cancel_legend">
+        <source>Cancel settings</source>
+        <target>Paramètres d'annulation</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.bookingtypes_legend">
+        <source>Booking types</source>
+        <target>Types de réservation</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.slots_legend">
+        <source>Slots</source>
+        <target>Créneaux</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.protected_legend">
+        <source>Access protection</source>
+        <target>Protection d'accès</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning.new.0">
+        <source>New planning</source>
+        <target>Nouveau planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.new.1">
+        <source>Create a new planning</source>
+        <target>Créer un nouveau planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.show.0">
+        <source>Planning details</source>
+        <target>Détails du planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.show.1">
+        <source>Show the details of planning ID %s</source>
+        <target>Afficher les détails du planning ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.edit.0">
+        <source>Edit planning</source>
+        <target>Éditer le planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.edit.1">
+        <source>Edit planning ID %s</source>
+        <target>Éditer le planning ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.editheader.0">
+        <source>Edit planning</source>
+        <target>Éditer le planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.editheader.1">
+        <source>Edit the planning settings</source>
+        <target>Éditer les paramètres de le planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.copy.0">
+        <source>Duplicate planning</source>
+        <target>Dupliquer le planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.copy.1">
+        <source>Duplicate planning ID %s</source>
+        <target>Dupliquer le planning ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.delete.0">
+        <source>Delete planning</source>
+        <target>Supprimer le planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.delete.1">
+        <source>Delete planning ID %s</source>
+        <target>Supprimer le planning ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.bookings.0">
+        <source>See planning bookings</source>
+        <target>Voir les réservations du planning</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.bookings.1">
+        <source>See planning bookings ID %s</source>
+        <target>Voir les réservations du planning ID %s</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

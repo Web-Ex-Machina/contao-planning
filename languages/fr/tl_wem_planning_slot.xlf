@@ -1,0 +1,154 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/wem-contao-planning/languages/en/tl_wem_planning_slot_slot.php" source-language="en" target-language="fr">
+    <body>
+	  <trans-unit id="tl_wem_planning_slot.canBook.0">
+        <source>Booking authorized</source>
+        <target>Réservation autorisée</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.canBook.1">
+        <source>Check to make this slot available for booking.</source>
+        <target>Cocher pour rendre ce créneau disponible aux réservations.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.openTime.0">
+        <source>Open time</source>
+        <target>Heure d'ouverture</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.openTime.1">
+        <source>Please enter the open time for this slot.</source>
+        <target>Saisir l'heure d'ouverture du créneau.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.closeTime.0">
+        <source>Close time</source>
+        <target>Heure de fermeture</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.closeTime.1">
+        <source>Please enter a close time for this slot.</source>
+        <target>Saisir l'heure de fermeture du créneau.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning_slot.type.0">
+        <source>Slot type</source>
+        <target>Type de créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.type.1">
+        <source>Please select the slot type.</source>
+        <target>Sélectionner le type de créneau.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.type.day">
+        <source>Day</source>
+        <target>Jour</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.type.date">
+        <source>Date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.type.range-days">
+        <source>Range of days</source>
+        <target>Fourchette de jours</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.type.range-dates">
+        <source>Range of dates</source>
+        <target>Fourchette de dates</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.dayStart.0">
+        <source>Start day</source>
+        <target>Jour de départ</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.dayStart.1">
+        <source>Please select the start day.</source>
+        <target>Sélectionner le jour de départ.</target>
+      </trans-unit>
+	  <trans-unit id="tl_wem_planning_slot.dayStop.0">
+        <source>Stop day</source>
+        <target>Jour de fin</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.dayStop.1">
+        <source>Please select the stop day.</source>
+        <target>Sélectionner le jour de fin.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.dateStart.0">
+        <source>Start date</source>
+        <target>Date de départ</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.dateStart.1">
+        <source>Please select the start date.</source>
+        <target>Sélectionner la date de départ.</target>
+      </trans-unit>
+	  <trans-unit id="tl_wem_planning_slot.dateStop.0">
+        <source>Stop date</source>
+        <target>Date de fin</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.dateStop.1">
+        <source>Please select the stop day.</source>
+        <target>Sélectionner la date de fin.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning_slot.tstamp.0">
+        <source>Revision date</source>
+        <target>Date de révision</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.tstamp.1">
+        <source>Date and time of the latest revision</source>
+        <target>Date et heure de la dernière révision</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning_slot.global_legend">
+        <source>General informations</source>
+        <target>Informations générales</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.slot_legend">
+        <source>Slot settings</source>
+        <target>Paramètres du créneau</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning_slot.new.0">
+        <source>New slot</source>
+        <target>Nouveau créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.new.1">
+        <source>Create a new slot</source>
+        <target>Créer un nouveau créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.show.0">
+        <source>Planning details</source>
+        <target>Détails du créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.show.1">
+        <source>Show the details of slot ID %s</source>
+        <target>Afficher les détails du créneau ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.edit.0">
+        <source>Edit slot</source>
+        <target>Éditer le créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.edit.1">
+        <source>Edit slot ID %s</source>
+        <target>Éditer le créneau ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.editheader.0">
+        <source>Edit slot</source>
+        <target>Éditer le créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.editheader.1">
+        <source>Edit the slot settings</source>
+        <target>Éditer les paramètres de le créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.copy.0">
+        <source>Duplicate slot</source>
+        <target>Dupliquer le créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.copy.1">
+        <source>Duplicate slot ID %s</source>
+        <target>Dupliquer le créneau ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.delete.0">
+        <source>Delete slot</source>
+        <target>Supprimer le créneau</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_slot.delete.1">
+        <source>Delete slot ID %s</source>
+        <target>Supprimer le créneau ID %s</target>
+      </trans-unit>
+	</body>
+  </file>
+</xliff>
