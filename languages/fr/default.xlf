@@ -1,0 +1,27 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/wem-contao-planning/languages/en/default.php" source-language="en" target-language="fr">
+    <body>
+      <trans-unit id="WEM.PLANNING.LABELS.titleBookingTypes">
+        <source>Booking type</source>
+        <target>Type de réservation</target>
+      </trans-unit>
+
+      <trans-unit id="WEM.PLANNING.ERR.noPlanningFound">
+        <source>The planning ID %s doesn't exists !</source>
+        <target>Le planning ID %s n'existe pas !</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.unknownAjaxAction">
+        <source>AJAX - Unknown %s action !</source>
+        <target>AJAX - Action %s inconnue !</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.noBookingTypeSent">
+        <source>Please select a booking type first.</source>
+        <target>Veuillez tout d'abord sélectionner un type de réservation.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.noSlotsAvailable">
+        <source>No slots available for given criteria.</source>
+        <target>Aucun créneau disponible pour les critères donnés.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

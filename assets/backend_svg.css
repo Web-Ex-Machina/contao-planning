@@ -1,4 +1,18 @@
 #tl_navigation .tl_level_1_group .group-wem_plannings {
-    background: url(icon_planning.svg) 3px 2px no-repeat;
+    background: url(icon_planning.png) 3px 0px no-repeat;
     background-size:13px auto;
 }
+
+/** Backend planning booking list **/
+.tl_wem_planning_booking{}
+.tl_wem_planning_booking i{float:left;margin-right:7.5px;font-size:18px;width:32px;height:32px;border-radius:50%;line-height:32px;text-align:center;color:#fff;}
+.tl_wem_planning_booking i.drafted{background:#f1c40f;}
+.tl_wem_planning_booking i.confirmed{background:#2ecc71;}
+.tl_wem_planning_booking i.denied{background:#e74c3c;}
+.tl_wem_planning_booking i.done{background:#3498db;}
+.tl_wem_planning_booking i.canceled{background:#e67e22;}
+
+/** Backend planning booking legend **/
+.tl_wem_planning_booking.legend{display:flex;justify-content:start;padding:15px;}
+.tl_wem_planning_booking.legend .item{margin-right:30px;}
+.tl_wem_planning_booking.legend .item i{float:none;margin-right:6px;font-size:12px;width:18px;height:18px;line-height:18px;}

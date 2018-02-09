@@ -11,7 +11,7 @@
 /**
  * Register the templates
  */
-/*TemplateLoader::addFiles(array
+TemplateLoader::addFiles(array
 (
-	'mod_wem_portfolio_list' => 'system/modules/wem-planning/templates/modules',
-));*/
+	'mod_wem_display_planning' => 'system/modules/wem-planning/templates/modules',
+));

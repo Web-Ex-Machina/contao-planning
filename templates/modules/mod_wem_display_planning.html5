@@ -1,0 +1,13 @@
+Bla<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if(!empty($this->planning['bookingTypes'])): ?>
+  <p><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['bookingTypes'] ?></p>
+  <select id="bookingType_select" name="bookingType">
+  <?php foreach($this->planning['bookingTypes'] as $arrBookingType): ?>
+	<option value="<?= $arrBookingType['id'] ?>"><?= $arrBookingType['title'] ?> (<?= $arrBookingType['duration'] ?>h)</option>
+  <?php endforeach; ?>
+  </select>
+<?php endif; ?>
+<?php $this->endblock(); ?>

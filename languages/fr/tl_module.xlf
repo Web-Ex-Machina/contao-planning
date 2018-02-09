@@ -1,0 +1,14 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/wem-contao-planning/languages/en/tl_module.php" source-language="en" target-language="fr">
+    <body>
+      <trans-unit id="tl_module.wem_planning.0">
+        <source>Planning</source>
+        <target>Planning</target>
+      </trans-unit>
+      <trans-unit id="tl_module.wem_planning.1">
+        <source>Select the planning to display.</source>
+        <target>Sélectionner le planning à afficher.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

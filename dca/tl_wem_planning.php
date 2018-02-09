@@ -44,7 +44,8 @@ $GLOBALS['TL_DCA']['tl_wem_planning'] = array
 		'label' => array
 		(
 			'fields'                  => array('title'),
-			'format'                  => '%s'
+			'format'                  => '%s',
+			'label_callback'			  => array('tl_wem_planning', 'listItems'),
 		),
 		'global_operations' => array
 		(
@@ -90,7 +91,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_wem_planning']['bookings'],
 				'href'                => 'table=tl_wem_planning_booking',
-				'icon'                => 'system/modules/wem-contao-planning/assets/icon_planning.png'
+				'icon'                => 'system/modules/wem-contao-planning/assets/icon_planning_16.png'
 			)
 		)
 	),
@@ -342,5 +343,28 @@ class tl_wem_planning extends Backend
 		}
 
 		return $varValue;
+	}
+
+	/**
+	 * List a planning
+	 *
+	 * @param array $arrRow
+	 *
+	 * @return string
+	 */
+	public function listItems($arrRow)
+	{
+		$strHtml = '<div class="tl_content_left tl_wem_planning">';
+
+		// Count drafted & confirmed booking
+		$objDraftedBooking = $this->Database->prepare('SELECT id FROM tl_wem_planning_booking WHERE pid=? AND status="drafted"')->execute($arrRow['id']);
+		$objConfirmedBooking = $this->Database->prepare('SELECT id FROM tl_wem_planning_booking WHERE pid=? AND status="confirmed"')->execute($arrRow['id']);
+		
+		$strHtml .= '<strong>'.$arrRow['title'].'</strong> ('.$objDraftedBooking->count().' réservations à traiter et '.$objConfirmedBooking->count().' confirmées)';
+
+
+		$strHtml .= '</div>';
+
+		return $strHtml;
 	}
 }

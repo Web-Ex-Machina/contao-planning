@@ -240,6 +240,22 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 	)
 );
 
+/**
+ * Display a legend for webmasters
+ */
+if(Input::get('table') == 'tl_wem_planning_booking')
+{
+	$strBookingStatusLegend = '
+		<div class="tl_wem_planning_booking legend">
+			<div class="item"><i class="drafted fa fa-pencil"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['drafted'].'</div>
+			<div class="item"><i class="confirmed fa fa-check"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['confirmed'].'</div>
+			<div class="item"><i class="denied fa fa-ban"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['denied'].'</div>
+			<div class="item"><i class="done fa fa-thumbs-up"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['done'].'</div>
+			<div class="item"><i class="canceled fa fa-undo"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['canceled'].'</div>
+		</div>
+	';
+	\Message::addRaw($strBookingStatusLegend);
+}
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
@@ -269,8 +285,17 @@ class tl_wem_planning_booking extends Backend
 	{
 		$objBookingType = $this->Database->prepare("SELECT * FROM tl_wem_planning_booking_type WHERE id=?")->limit(1)->execute($arrRow["bookingType"]);
 
-		$strHtml = '<div class="tl_content_left">';
+		$strHtml = '<div class="tl_content_left tl_wem_planning_booking '.$arrRow['status'].'">';
 
+		switch($arrRow['status'])
+		{
+			case 'drafted': 	$strHtml .= '<i class="'.$arrRow['status'].' fa fa-pencil"></i>'; break;
+			case 'confirmed': 	$strHtml .= '<i class="'.$arrRow['status'].' fa fa-check"></i>'; break;
+			case 'denied': 		$strHtml .= '<i class="'.$arrRow['status'].' fa fa-ban"></i>'; break;
+			case 'done': 		$strHtml .= '<i class="'.$arrRow['status'].' fa fa-thumbs-up"></i>'; break;
+			case 'canceled': 	$strHtml .= '<i class="'.$arrRow['status'].' fa fa-undo"></i>'; break;
+		}
+		
 		$strHtml .= '<strong>Réservation du '.Date::parse(Config::get('datimFormat'), $arrRow['date']).' : '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status'][$arrRow['status']].'</strong>';
 
 		$strHtml .= '<br />'.$arrRow['firstname'].' '.$arrRow['lastname'].' pour '.$objBookingType->title.' ('.$objBookingType->duration.'h)';

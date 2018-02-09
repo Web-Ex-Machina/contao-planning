@@ -19,6 +19,14 @@
         <source>Planning</source>
         <target>Planning</target>
       </trans-unit>
+      <trans-unit id="FMD.wem_display_planning.0">
+        <source>Display Planning</source>
+        <target>Affichage d'un planning</target>
+      </trans-unit>
+      <trans-unit id="FMD.wem_display_planning.1">
+        <source>Display a specific planning with the associated configuration.</source>
+        <target>Affiche un planning spécifique avec la configuration associée.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
