@@ -94,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 	(
 		'__selector__'				  => array('isUpdate'),
 		'default'                     => '
-			{global_legend},date,bookingType,lastname,firstname,phone,email,comments;
+			{global_legend},bookingType,date,dateEnd,lastname,firstname,phone,email,comments;
 			{status_legend},status;
 			{source_legend},isUpdate
 		'
@@ -119,6 +119,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 		),
 		'created_at' => array
 		(
+			'flag'                    => 8,
 			'default'				  => time(),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
@@ -129,6 +130,18 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 			'relation'                => array('type'=>'belongsTo', 'load'=>'eager')
 		),
 
+		'bookingType' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['bookingType'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'flag'                    => 1,
+			'inputType'               => 'select',
+			'eval'                    => array('chosen'=>true, 'mandatory'=>true),
+			'options_callback'		  => array('tl_wem_planning_booking', 'getTypeLabels'),
+			'foreignKey'              => 'tl_wem_planning_booking_type.title',
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
 		'date' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['date'],
@@ -141,15 +154,16 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
-		'bookingType' => array
+		'dateEnd' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['bookingType'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['dateEnd'],
+			'default'                 => time(),
 			'exclude'                 => true,
 			'filter'                  => true,
-			'flag'                    => 1,
-			'inputType'               => 'select',
-			'eval'                    => array('chosen'=>true, 'mandatory'=>true, 'tl_class'=>'w50'),
-			'foreignKey'              => 'tl_wem_planning_booking_type.title',
+			'sorting'                 => true,
+			'flag'                    => 8,
+			'inputType'               => 'text',
+			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'lastname' => array
@@ -206,7 +220,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 			'filter'                  => true,
 			'flag'                    => 1,
 			'inputType'               => 'select',
-			'options'        		  => array('drafted', 'confirmed', 'denied', 'done', 'canceled'),
+			'options'        		  => array('drafted', 'pending', 'confirmed', 'denied', 'done', 'canceled'),
 			'reference'				  => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status'],
 			'eval'                    => array('chosen'=>true, 'mandatory'=>true),
 			'sql'                     => "varchar(32) NOT NULL default ''"
@@ -248,6 +262,7 @@ if(Input::get('table') == 'tl_wem_planning_booking')
 	$strBookingStatusLegend = '
 		<div class="tl_wem_planning_booking legend">
 			<div class="item"><i class="drafted fa fa-pencil"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['drafted'].'</div>
+			<div class="item"><i class="pending fa fa-exclamation"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['pending'].'</div>
 			<div class="item"><i class="confirmed fa fa-check"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['confirmed'].'</div>
 			<div class="item"><i class="denied fa fa-ban"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['denied'].'</div>
 			<div class="item"><i class="done fa fa-thumbs-up"></i> '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status']['done'].'</div>
@@ -275,6 +290,30 @@ class tl_wem_planning_booking extends Backend
 	}
 
 	/**
+	 * Retrieve and adjusts the booking types list
+	 * @param  [Object] $objDc    [Datacontainer]
+	 * @return [Array]            [Booking Type List adjusted]
+	 */
+	public function getTypeLabels($objDc)
+	{
+		$objPlanning = $this->Database->prepare("SELECT * FROM tl_wem_planning_booking WHERE id = ?")->limit(1)->execute($objDc->id);
+		$objBookingTypes = $this->Database->prepare("SELECT * FROM tl_wem_planning_booking_type WHERE pid = ? ORDER BY duration ASC")->execute($objPlanning->pid);
+		$arrData = array();
+
+		if(!$objBookingTypes || $objBookingTypes->count() == 0)
+		{
+			return $arrData;
+		}
+
+		while($objBookingTypes->next())
+		{
+			$arrData[$objBookingTypes->id] = $objBookingTypes->title.' ('.$objBookingTypes->duration.'h)';
+		}
+
+		return $arrData;
+	}
+
+	/**
 	 * List a booking type
 	 *
 	 * @param array $arrRow
@@ -290,6 +329,7 @@ class tl_wem_planning_booking extends Backend
 		switch($arrRow['status'])
 		{
 			case 'drafted': 	$strHtml .= '<i class="'.$arrRow['status'].' fa fa-pencil"></i>'; break;
+			case 'pending': 	$strHtml .= '<i class="'.$arrRow['status'].' fa fa-exclamation"></i>'; break;
 			case 'confirmed': 	$strHtml .= '<i class="'.$arrRow['status'].' fa fa-check"></i>'; break;
 			case 'denied': 		$strHtml .= '<i class="'.$arrRow['status'].' fa fa-ban"></i>'; break;
 			case 'done': 		$strHtml .= '<i class="'.$arrRow['status'].' fa fa-thumbs-up"></i>'; break;

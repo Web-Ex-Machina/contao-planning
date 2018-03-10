@@ -357,10 +357,10 @@ class tl_wem_planning extends Backend
 		$strHtml = '<div class="tl_content_left tl_wem_planning">';
 
 		// Count drafted & confirmed booking
-		$objDraftedBooking = $this->Database->prepare('SELECT id FROM tl_wem_planning_booking WHERE pid=? AND status="drafted"')->execute($arrRow['id']);
+		$objPendingBooking = $this->Database->prepare('SELECT id FROM tl_wem_planning_booking WHERE pid=? AND status="pending"')->execute($arrRow['id']);
 		$objConfirmedBooking = $this->Database->prepare('SELECT id FROM tl_wem_planning_booking WHERE pid=? AND status="confirmed"')->execute($arrRow['id']);
 		
-		$strHtml .= '<strong>'.$arrRow['title'].'</strong> ('.$objDraftedBooking->count().' réservations à traiter et '.$objConfirmedBooking->count().' confirmées)';
+		$strHtml .= '<strong>'.$arrRow['title'].'</strong> ('.$objPendingBooking->count().' réservations à traiter et '.$objConfirmedBooking->count().' confirmées)';
 
 
 		$strHtml .= '</div>';

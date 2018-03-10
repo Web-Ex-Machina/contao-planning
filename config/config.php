@@ -48,3 +48,35 @@ $GLOBALS['TL_MODELS'][\WEM\Planning\Model\Booking::getTable()] = 'WEM\Planning\M
 $GLOBALS['TL_MODELS'][\WEM\Planning\Model\BookingType::getTable()] = 'WEM\Planning\Model\BookingType';
 $GLOBALS['TL_MODELS'][\WEM\Planning\Model\Planning::getTable()] = 'WEM\Planning\Model\Planning';
 $GLOBALS['TL_MODELS'][\WEM\Planning\Model\Slot::getTable()] = 'WEM\Planning\Model\Slot';
+
+/**
+ * Notification Center Notification Types
+ */
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge_recursive(
+	(array) $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'],
+	array(
+		'wem_planning' => array(
+			'confirm_booking' => array(
+				'recipients'           => array('user_email'),
+				'email_subject'        => array('booking_*'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
+				'email_replyTo'        => array('user_email'),
+			),
+			'update_booking' => array(
+				'recipients'           => array('user_email'),
+				'email_subject'        => array('booking_*'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink'),
+				'email_replyTo'        => array('user_email'),
+			),
+			'cancel_booking' => array(
+				'recipients'           => array('user_email'),
+				'email_subject'        => array('booking_*'),
+				'email_text'           => array('booking_*', 'bookingType_*'),
+				'email_html'           => array('booking_*', 'bookingType_*'),
+				'email_replyTo'        => array('user_email'),
+			),
+		)
+	)
+);

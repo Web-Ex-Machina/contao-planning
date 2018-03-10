@@ -1,12 +1,26 @@
 <?xml version="1.0" ?><xliff version="1.1">
   <file datatype="php" original="system/modules/wem-contao-planning/languages/en/default.php" source-language="en" target-language="fr">
     <body>
-      <trans-unit id="WEM.PLANNING.LABELS.titleBookingTypes">
+      <trans-unit id="WEM.PLANNING.MODAL.title">
         <source>Booking type</source>
         <target>Type de réservation</target>
       </trans-unit>
 
-      <trans-unit id="WEM.PLANNING.ERR.noPlanningFound">
+      <trans-unit id="WEM.PLANNING.LABELS.titleBookingTypes">
+        <source>Booking form</source>
+        <target>Formulaire de réservation</target>
+      </trans-unit>
+
+      <trans-unit id="WEM.PLANNING.MSG.bookingSuccess">
+        <source>The booking request has been submitted.</source>
+        <target>La demande de réservation a été envoyée.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.MSG.bookingCancelSuccess">
+        <source>The booking has been cancelled.</source>
+        <target>La réservation a été annulée.</target>
+      </trans-unit>
+
+      <trans-unit id="WEM.PLANNING.ERR.planningNotFound">
         <source>The planning ID %s doesn't exists !</source>
         <target>Le planning ID %s n'existe pas !</target>
       </trans-unit>
@@ -14,13 +28,58 @@
         <source>AJAX - Unknown %s action !</source>
         <target>AJAX - Action %s inconnue !</target>
       </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.noSlotsAvailable">
+        <source>No slots available for given criteria.</source>
+        <target>Aucun créneau disponible pour les critères donnés.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.slotIsNotAvailableAnymore">
+        <source>This slot is not available anymore. Please select another one.</source>
+        <target>Ce créneau n'est plus disponible. Veuillez en sélectionner un autre.</target>
+      </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.noBookingTypeSent">
         <source>Please select a booking type first.</source>
         <target>Veuillez tout d'abord sélectionner un type de réservation.</target>
       </trans-unit>
-      <trans-unit id="WEM.PLANNING.ERR.noSlotsAvailable">
-        <source>No slots available for given criteria.</source>
-        <target>Aucun créneau disponible pour les critères donnés.</target>
+      <trans-unit id="WEM.PLANNING.ERR.invalidBookingType">
+        <source>Booking type is invalid.</source>
+        <target>Le type de réservation est invalide.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.noDatesSent">
+        <source>Start and Stop dates are missing or invalid.</source>
+        <target>Les dates de début ou de fin sont manquantes ou invalides.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.bookingCreationError">
+        <source>An error occured when locking the slot, please refresh the page and retry.</source>
+        <target>Une erreur est survenue lors du verouillage du créneau. Veuillez rafraichir la page et réessayer.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.noBookingSent">
+        <source>Booking parameter is missing/invalid, please retry.</source>
+        <target>Le paramètre de réservation est manquant/invalide, veuillez réessayer.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.bookingNotFound">
+        <source>The booking was not found or doesn't exist anymore.</source>
+        <target>La réservation n'a pas été trouvée ou n'existe plus.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.bookingCancelError">
+        <source>An error occured when cancelling the booking, please refresh the page and retry.</source>
+        <target>Une erreur est survenue lors de l'annulation de la réservation. Veuillez rafraichir la page et réessayer.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.bookingFormErrors">
+        <source>The form contains errors.</source>
+        <target>Le formulaire comporte des erreurs.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.requiredFieldMissing">
+        <source>The field %s is required.</source>
+        <target>Le champ %s est obligatoire.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.invalidField">
+        <source>The field %s is invalid.</source>
+        <target>Le champ %s est invalide.</target>
+      </trans-unit>
+
+      <trans-unit id="WEM.PLANNING.ERR.cannotUpdateBooking">
+        <source>You are not allowed to update booking.</source>
+        <target>Vous n'êtes pas autorisé à mettre à jour une réservation.</target>
       </trans-unit>
     </body>
   </file>

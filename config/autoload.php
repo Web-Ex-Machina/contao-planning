@@ -13,5 +13,9 @@
  */
 TemplateLoader::addFiles(array
 (
-	'mod_wem_display_planning' => 'system/modules/wem-planning/templates/modules',
+	'mod_wem_display_planning' => 'system/modules/wem-contao-planning/templates/modules',
+	'mod_wem_display_planning_update' => 'system/modules/wem-contao-planning/templates/modules',
+
+	'wem_calendar_default' => 'system/modules/wem-contao-planning/templates/elements',
+	'wem_calendar_booking_form' => 'system/modules/wem-contao-planning/templates/elements',
 ));

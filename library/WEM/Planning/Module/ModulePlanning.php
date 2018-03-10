@@ -11,6 +11,7 @@
 namespace WEM\Planning\Module;
 
 use \RuntimeException as Exception;
+use Contao\Date;
 use WEM\Planning\Model\Planning;
 use WEM\Planning\Model\BookingType;
 use WEM\Planning\Model\Slot;
@@ -24,48 +25,47 @@ use WEM\Planning\Model\Booking;
 abstract class ModulePlanning extends \Module
 {
 	/**
-	 * Retrieve Planning configuration
-	 * @param  [Array] $arrConfig [Configuration wanted]
-	 * @return [Array]            [Planning data]
+	 * Find Booking Types for the current planning
+	 * @return [Array] [Booking Types Array]
 	 */
-	protected function getPlanning($arrConfig = array())
+	protected function findBookingTypes()
 	{
 		try
 		{
-			// Get the planning Model
-			$objPlanning = Planning::findByPk($this->wem_planning);
+			if(!$objBookingTypes = BookingType::findItems(["pid"=>$this->wem_planning]))
+				throw new Exception(sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingTypesFound'], $this->wem_planning));
 
-			// Throw an exception if there is nothing.
-			if(!$objPlanning)
-				throw new Exception(sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noPlanningFound'], $this->wem_planning));
+			$arrData = array();
 
-			// Cast as array
-			$arrData = $objPlanning->row();
-
-			// Get the Planning Booking Types
-			if($arrConfig["getBookingTypes"])
+			while($objBookingTypes->next())
 			{
-				if($objBookingTypes = BookingType::findItems(["pid"=>$arrData["id"]]))
-				{
-					$arrData["bookingTypes"] = array();
-					while($objBookingTypes->next())
-					{
-						$arrData["bookingTypes"][] = $objBookingTypes->row();
-					}
-				}
+				$arrData[$objBookingTypes->id] = $objBookingTypes->row();
 			}
 
-			// Get the Planning Slots
-			if($arrConfig["getSlots"])
+			return $arrData;
+		}
+		catch(Exception $e)
+		{
+			throw $e;
+		}
+	}
+
+	/**
+	 * Find Slots for the current planning
+	 * @return [Array] [Slots Array]
+	 */
+	protected function findSlots()
+	{
+		try
+		{
+			if(!$objSlots = Slot::findItems(["pid"=>$this->wem_planning]))
+				throw new Exception(sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noSlotsFound'], $this->wem_planning));
+
+			$arrData = array();
+
+			while($objSlots->next())
 			{
-				if($objSlots = Slot::findItems(["pid"=>$arrData["id"]]))
-				{
-					$arrData["slots"] = array();
-					while($objSlots->next())
-					{
-						$arrData["slots"][] = $objSlots->row();
-					}
-				}
+				$arrData[] = $objSlots->row();
 			}
 
 			return $arrData;
@@ -91,9 +91,9 @@ abstract class ModulePlanning extends \Module
 			$arrConfig = array("pid" => (int)$this->wem_planning);
 
 			if($intStart == 0)
-				$intStart = time();
+				$intStart = $this->start;
 			if($intStop == 0)
-				$intStop = strtotime("+7 days");
+				$intStop = $this->stop;
 			
 			$arrConfig["date_start"] = $intStart;
 			$arrConfig["date_stop"] = $intStop;
@@ -113,10 +113,118 @@ abstract class ModulePlanning extends \Module
 			$arrBookings = array();
 			while($objBookings->next())
 			{
-				$arrBookings[] = $objBookings->row();
+				$arrBooking = $objBookings->row();
+
+				$arrBooking['start'] = date("Y-m-d\TH:i:s", $arrBooking['date']);
+				$arrBooking['end'] = date("Y-m-d\TH:i:s", $arrBooking['dateEnd']);
+
+				$arrBookings[] = $arrBooking;
 			}
 
 			return $arrBookings;
+		}
+		catch(Exception $e)
+		{
+			throw $e;
+		}
+	}
+
+	/**
+	 * Check if it is possible to book on a certain slot
+	 * @param  [Integer] $intDuration [Duration of the booking]
+	 * @param  [Integer] $intDate     [Date wanted - Will be now if not filled]
+	 * @return [Boolean] 		      [True if available]
+	 */
+	protected function checkIfSlotIsAvailable($intDuration, $intDate = 0)
+	{
+		try
+		{
+			// Set the default time if not filled
+			if($intDate == 0)
+				$intDate = time();
+
+			// Get the slots available for the planning
+			$objDate = new \Date($intDate);
+			$intStart = $objDate->tstamp;
+			$intStop = $objDate->tstamp + $intDuration;
+
+			$intCurrentDay = date('N', $intStart);
+
+			// Retrieve planning slots if it's not already done
+			if(!$this->slots)
+				$this->slots = $this->findSlots();
+
+			// Then, retrieve all the available slots for the date wanted
+			$arrSlots = array();
+			foreach($this->slots as $arrSlot)
+			{
+				// Format the open/close timestamps of the slot tested
+				$intOpen = mktime(date('H', $arrSlot['openTime']), 0, 0, date('m', $intStart), date('d', $intStart), date('Y', $intStart));
+				$intClose = mktime(date('H', $arrSlot['closeTime']), 0, 0, date('m', $intStart), date('d', $intStart), date('Y', $intStart));
+
+				// Check if the slot is available for the current dates
+				switch($arrSlot['type'])
+				{
+					case "day":
+
+						// Skip if it is the wrong day
+						if($GLOBALS['TL_LANG']['DAYS'][$intCurrentDay] != $arrSlot['dayStart'])
+							continue(2);
+
+					break;
+
+					case "range-days":
+
+						// Format the range of "good" days
+						$dayStart = $this->getNumberFromDay($arrSlot['dayStart']);
+						$dayStop = $this->getNumberFromDay($arrSlot['dayStop']);
+
+						// Skip if the current day isn't here
+						if((int)$intCurrentDay < (int)$dayStart || (int)$intCurrentDay > (int)$dayStop)
+							continue(2);
+
+					break;
+
+					case "date":
+						$objTmpDate = new \Date($arrSlot['dateStart']);
+
+						// Skip if the date is differente
+						if($objDate->parse("d-m-Y") != $objTmpDate->parse("d-m-Y"))
+							continue(2);
+					break;
+
+					case "range-dates":
+
+						// Skip if the date is in range
+						if($intStart < $arrSlot['dateStart'] || $intStart > $arrSlot['dateStop'])
+							continue(2);
+
+					break;
+
+					default:
+						continue(2);
+				}
+
+				// Skip if the open/close times doesn't match
+				// Skip if the slot duration + current time checked overflows close time
+				if($intStart < $intOpen || $intStop > $intClose)
+					continue;
+
+				// Skip if this slot is a "forbid" one
+				if(!$arrSlot['canBook'])
+					continue;
+
+				$arrSlots[] = $arrSlot;
+			}
+
+			// Check if there is a slot who allow booking for the current date
+			if(empty($arrSlots))
+				return false;
+
+			if(Booking::countByDates($this->wem_planning, $intStart, $intStop) > 0)
+				return false;
+			
+			return true;
 		}
 		catch(Exception $e)
 		{
@@ -135,99 +243,76 @@ abstract class ModulePlanning extends \Module
 	{
 		try
 		{
-			$objDate = new \Date();
-
+			/**
+			 * Step 1 : Delimite the date ranges
+			 */
 			if($intStart == 0)
-				$intStart = $objDate->tstamp;
+				$intStart = $this->start;
 			if($intStop == 0)
-				$intStop = $objDate->getWeekEnd(1); // Next Monday, same time ("Next sunday at 23:59:59" will be more precise. Todo.)
+				$intStop = $this->stop;
 
-			// Get the slots available for the booking
-			$objSlots = Slot::findItems(["pid"=>$this->wem_planning]);
+			// Adjust start setting
+			if($intStart <= time())
+				$intStart = strtotime("+1 day", $intStart);
 
-			if(!$objSlots)
-				throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noSlotsAvailable']);
+			// TODO : Adjust the "cannot reserve before one day" setting by a specific field in the planning
+			$objDate = new Date(date("Y-m-d-H", $intStart), "Y-m-d-H");
+			$intStart = $objDate->tstamp;
 
-			$arrSlots = array();
-			while($objSlots->next())
+			/**
+			 * Step 2 : Determine the slot size
+			 */
+			$intDuration = 0;
+
+			// Retrieve Booking Types if they doesn't exists
+			if(!$this->bookingTypes)
+				$this->bookingTypes = $this->findBookingTypes();
+
+			// Then, retrieve the duration we need
+			foreach($this->bookingTypes as $arrBooking)
 			{
-				// Check if the slot is available for the current dates
-				switch($objSlots->type)
+				if($arrBooking['id'] == $intBookingType)
 				{
-					case "day":
-
-						// Skip if it is the wrong day
-						if($GLOBALS['TL_LANG']['DAYS'][date('N')] != $objSlots->dayStart)
-							continue(2);
-
-						// Format the timestamp of current day
-						$intDay = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-
-						// Skip if the open/close times doesn't match
-						if($objDate->tstamp < $intDay + $objSlots->openTime || $objDate->tstamp > $intDay + $objSlots->closeTime)
-							continue(2);
-					break;
-
-					case "range-days":
-
-						// Format the range of "good" days
-						$dayStart = $this->getNumberFromDay($objSlots->dayStart);
-						$dayStop = $this->getNumberFromDay($objSlots->dayStop);
-						$dayCurrent = date('N');
-
-						// Skip if the current day isn't here
-						if($dayCurrent < (int)$dayStart || $dayCurrent > (int)$dayStop)
-							continue(2);
-
-						// Format the timestamp of current day
-						$intDay = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-
-						// Skip if the open/close times doesn'y match
-						if($objDate->tstamp < $intDay + $objSlots->openTime || $objDate->tstamp > $intDay + $objSlots->closeTime)
-							continue(2);
-					break;
-
-					case "date":
-						$objTmpDate = new \Date($objSlots->dateStart);
-
-						// Skip if the date is differente
-						if($objDate->parse("d-m-Y") != $objTmpDate->parse("d-m-Y"))
-							continue(2);
-
-						// Skip if the open/close times doesn't match
-						if($objDate->tstamp < $objSlots->dateStart + $objSlots->openTime || $objDate->tstamp > $objSlots->dateStart + $objSlots->closeTime)
-							continue(2);
-					break;
-
-					case "range-dates":
-
-						// Skip if the date is in range
-						if($objDate->tstamp < $objSlots->dateStart || $objDate->tstamp > $objSlots->dateStop)
-							continue(2);
-
-						// Format the timestamp of current day
-						$intDay = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-
-						// Skip if the open/close times doesn'y match
-						if($objDate->tstamp < $intDay + $objSlots->openTime || $objDate->tstamp > $intDay + $objSlots->closeTime)
-							continue(2);
-
+					$intDuration = $arrBooking['duration'];
 					break;
 				}
-
-				$arrSlots[] = $objSlots->row();
 			}
 
-			dump($arrSlots);
+			// Throw exception if we don't retrieve a duration
+			if($intDuration == 0)
+				throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingTypeSent']);
 
-			// Get all the bookings of the current week
-			$arrBookings = $this->findBookings($intBookingType, $intStart, $intStop);
+			/**
+			 * Step 3 : Build the possible "events", by check if every available slot is allowed
+			 */
+			$intSlotDuration = $intDuration * 60 * 60;
+			$intTmpTstamp = $intStart - 1800; // Substract 30 minutes to compensate the first added 30 minutes at the beginning of each loop
+			$arrItems = array();
 
-			
+			// Retrieve Planning Slots
+			if(!$this->slots)
+				$this->slots = $this->findSlots();
+
+			while($intTmpTstamp < $this->stop)
+			{
+				// Add 30 minutes gap between each slot
+				// TODO : Adjust the "gap between each slot" with a more arbitrary one, a specific field in the planning or maybe the min duration in booking types ?
+				$intTmpTstamp += 1800;
+
+				// Check if we can add the slot to the available ones
+				if(!$this->checkIfSlotIsAvailable($intSlotDuration, $intTmpTstamp))
+					continue;
+
+				// If it's okay, add the slot.
+				$arrItems[] = [
+					"title" => "",
+					"start" => date("Y-m-d\TH:i:s", $intTmpTstamp),
+					"end"   => date("Y-m-d\TH:i:s", $intTmpTstamp + $intSlotDuration)
+				];
+			}
 
 
-
-			return $arrBookings;
+			return $arrItems;
 		}
 		catch(Exception $e)
 		{
@@ -242,8 +327,13 @@ abstract class ModulePlanning extends \Module
 	 */
 	protected function getNumberFromDay($strDay)
 	{
-		for($i = 0; $i < 7; $i++)
-			if($strDay == $GLOBALS['TL_LANG']['DAYS'][$i])
-				return $i;
+		for($i = 0; $i < 7; $i++){
+			if($strDay == $GLOBALS['TL_LANG']['DAYS'][$i]){
+				if($i == 0)
+					return 7;
+				else
+					return $i;
+			}
+		}
 	}
 }

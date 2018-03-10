@@ -1,0 +1,192 @@
+<style type="text/css">
+	.fc-day-header{text-transform:capitalize;}
+</style>
+<script>
+	var calendar;
+
+	$(document).ready(function()
+	{
+	    var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+		
+		/**
+		 * Trucs intéressants
+		 * - https://fullcalendar.io/docs/display/businessHours/
+		 * - https://fullcalendar.io/docs/display/height/
+		 * - https://fullcalendar.io/docs/display/contentHeight/
+		 * - 
+		 */
+	
+		/* initialize the calendar
+		-----------------------------------------------------------------*/
+		calendar =  $('#calendar').fullCalendar(
+		{
+			locale: 'fr',
+			timeFormat: 'hh:mm',
+			height: 750,
+			header:
+			{
+				left: 'title',
+				center: 'agendaDay,agendaWeek,month',
+				right: 'prev,next today'
+			},
+			editable: false,
+			firstDay: 1,
+			selectable: true,
+			defaultView: 'agendaWeek',
+
+			columnHeader: true,
+			columnHeaderFormat: 'dddd DD',
+
+            eventSources:
+            [
+				{
+					id: 1,
+					url: '{{env::request}}',
+					type: 'POST',
+					data: {
+						TL_AJAX: true,
+						module: <?= $this->module_id ?>,
+						action: 'findBookings'
+					},
+					error: function(msg, error, errorFull) {
+						toastr.error('Erreur : '+ error+'<br />'+errorFull);
+					},
+					color: '#dddddd',   // a non-ajax option
+					textColor: 'black', // a non-ajax option
+					endParam: "stop",
+					className: "slot-booked"
+				},
+				{
+					id: 2,
+					url: '{{env::request}}',
+					type: 'POST',
+					data: function() {
+						return {
+							TL_AJAX: true,
+							module: <?= $this->module_id ?>,
+							action: 'findAvailableSlots',
+							bookingType: $('#bookingType_select').val()
+						}
+					},
+					error: function(msg, error, errorFull) {
+						toastr.error('Erreur : '+ error+'<br />'+errorFull);
+					},
+					color: '#007bff',   // a non-ajax option
+					textColor: 'black', // a non-ajax option
+					endParam: "stop",
+					className: "slot-available"
+				}
+			],
+
+			eventClick: function(calEvent, jsEvent, view)
+			{
+				if(calEvent.source.className.indexOf('slot-available') > -1)
+				{
+					var objFields = {
+						 TL_AJAX : true
+						,module : <?= $this->module_id ?>
+						,action : 'draftBooking'
+						,bookingType : parseInt($('#bookingType_select').val())
+						,start : calEvent.start._i
+						,stop : calEvent.end._i
+					};
+
+					$.post("{{env::request}}", objFields, function(msg){
+						try {
+							var response = $.parseJSON(msg);
+							if(response.status == "error")
+								toastr.error(response.message);
+							else
+								toastr.info(response.message);
+						} catch (err) {
+							if($('.mod_wem_display_planning .modal.booking-form').length > 0)
+							{
+								$('.mod_wem_display_planning .modal.booking-form').modal('dispose').remove();
+							}
+
+							$('.mod_wem_display_planning').append(msg);
+							var $modalDiv = $('.mod_wem_display_planning .modal.booking-form').first();
+
+							// Bind events on modal
+							$modalDiv.bind('hide.bs.modal', function(e){ cancelBooking($modalDiv.attr('data-booking')); });
+							$modalDiv.find('.btn-ok').bind('click', function(e){ confirmBooking(e, $modalDiv); });
+
+							$modalDiv.modal('show');
+						}
+					});
+				}
+			}
+		});
+		
+		$('#bookingType_select').bind('change', function(){
+			calendar.fullCalendar('refetchEventSources', 1);
+			calendar.fullCalendar('refetchEventSources', 2);
+		});
+	});
+
+/**
+ * Send an AJAX request to delete the booking
+ * Jeff -> Promise ?
+ * @param {Integer} id [Booking ID]
+ */
+function cancelBooking(id) {
+	var objFields = {
+		 TL_AJAX : true
+		,module : <?= $this->module_id ?>
+		,action : 'cancelBooking'
+		,booking : id
+	};
+
+	$.post("{{env::request}}", objFields, function(msg){
+		var response = jQuery.parseJSON(msg);
+		if(response.status == "success"){
+			toastr.success(response.message);
+			calendar.fullCalendar('refetchEventSources', 1);
+			calendar.fullCalendar('refetchEventSources', 2);
+		}else{
+			toastr.error(response.message);
+		}
+	});
+}
+
+/**
+ * Send an AJAX request to confirm the booking
+ * Jeff -> Promise ?
+ * @param  {Object} objEvent [Event]
+ * @param  {Object} objEvent [Event]
+ */
+function confirmBooking(objEvent, objModal) {
+	var objFields = {
+		 TL_AJAX : true
+		,module : <?= $this->module_id ?>
+		,action : 'confirmBooking'
+		,booking : objModal.attr('data-booking')
+		,lastname: objModal.find('input[name="lastname"]').val()
+		,firstname: objModal.find('input[name="firstname"]').val()
+		,phone: objModal.find('input[name="phone"]').val()
+		,email: objModal.find('input[name="email"]').val()
+		,comments: objModal.find('textarea[name="comments"]').val()
+	};
+
+	$.post("{{env::request}}", objFields, function(msg){
+		var response = jQuery.parseJSON(msg);
+		if(response.status == "success"){
+			toastr.success(response.message);
+			// Refresh the calendars
+			calendar.fullCalendar('refetchEventSources', 1);
+			calendar.fullCalendar('refetchEventSources', 2);
+			// And unbind the modal dismiss event who'll cancel the event
+			objModal.unbind('hide.bs.modal');
+			// And dispose the modal
+			objModal.modal('hide');
+		}else{
+			toastr.error(response.message);
+		}
+	});
+}
+</script>
+
+<div id="calendar"></div>

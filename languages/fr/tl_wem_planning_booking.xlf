@@ -9,6 +9,14 @@
         <source>Enter the booking date.</source>
         <target>Saisir la date de réservation.</target>
       </trans-unit>
+      <trans-unit id="tl_wem_planning_booking.dateEnd.0">
+        <source>Date de fin</source>
+        <target>Date de fin</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_booking.dateEnd.1">
+        <source>Enter the booking end date.</source>
+        <target>Saisir la date de fin de la réservation.</target>
+      </trans-unit>
       <trans-unit id="tl_wem_planning_booking.bookingType.0">
         <source>Booking type</source>
         <target>Type de réservation</target>
@@ -69,6 +77,10 @@
       <trans-unit id="tl_wem_planning_booking.status.drafted">
         <source>Drafted</source>
         <target>En cours</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_booking.status.pending">
+        <source>Pending</source>
+        <target>En attente</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.status.confirmed">
         <source>Confirmed</source>

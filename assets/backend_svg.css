@@ -7,6 +7,7 @@
 .tl_wem_planning_booking{}
 .tl_wem_planning_booking i{float:left;margin-right:7.5px;font-size:18px;width:32px;height:32px;border-radius:50%;line-height:32px;text-align:center;color:#fff;}
 .tl_wem_planning_booking i.drafted{background:#f1c40f;}
+.tl_wem_planning_booking i.pending{background:#95a5a6;}
 .tl_wem_planning_booking i.confirmed{background:#2ecc71;}
 .tl_wem_planning_booking i.denied{background:#e74c3c;}
 .tl_wem_planning_booking i.done{background:#3498db;}

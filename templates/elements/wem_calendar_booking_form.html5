@@ -1,0 +1,45 @@
+<div class="modal fade booking-form" data-booking="<?= $this->booking_id ?>" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">Formulaire de réservation</div>
+            
+            <div class="modal-body">
+                <p>Vous souhaitez prendre rendez-vous <strong>le <?= date('d/m/Y', $this->start) ?>, de <?= date('H:i', $this->start) ?> à <?= date('H:i', $this->stop) ?></strong> pour le sujet suivant : <strong><?= $this->bookingType['name'] ?></strong><br />Veuillez remplir le formulaire ci-dessous pour valider votre réservation.</p>
+
+                <p class="text-secondary">Ce créneau est verrouillé pour une durée d'une demi-heure. Une fois ce délai passé, il ne sera peut-être plus disponible.</p>
+                
+                <form method="POST" action="<?= \Environment::get('request') ?>">
+                    <div class="form-row mb-3">
+                        <div class="col">
+                            <label for="lastname">Nom de famille</label>
+                            <input id="lastname" name="lastname" type="text" class="form-control" placeholder="Saisissez votre nom de famille">
+                        </div>
+                        <div class="col">
+                            <label for="firstname">Prénom</label>
+                            <input id="firstname" name="firstname" type="text" class="form-control" placeholder="Saisissez votre prénom">
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="col">
+                            <label for="phone">Téléphone</label>
+                            <input id="phone" name="phone" type="text" class="form-control" placeholder="Saisissez votre numéro de téléphone">
+                        </div>
+                        <div class="col">
+                            <label for="email">Email</label>
+                            <input id="email" name="email" type="email" class="form-control" placeholder="Saisissez votre adresse email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="comments">Informations additionnelles</label>
+                        <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Indiquez toute information pouvant être utile dans le cadre de cette réservation."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary btn-ok">Confirmer la réservation</button>
+            </div>
+        </div>
+    </div>
+</div>

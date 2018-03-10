@@ -6,6 +6,13 @@
 	<p class="error"><?= $this->strError ?></p>
 <?php else: ?>
 	
+	<h2>Modification de réservation</h2>
+	<p>Texte Disclaimer</p>
+
+	<p>Champs du RDV en form, pour une modification</p>
+	<p>Un bouton permettant de changer le créneau</p>
+
+
 	<?php if(!empty($this->bookingTypes)): ?>
 	  <p><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['bookingTypes'] ?></p>
 	  <select id="bookingType_select" name="bookingType">
