@@ -1,5 +1,6 @@
 <style type="text/css">
 	.fc-day-header{text-transform:capitalize;}
+	/*.fc-time-grid-event .fc-time{display:none !important;}*/
 </style>
 <script>
 	var calendar;
@@ -23,24 +24,23 @@
 		-----------------------------------------------------------------*/
 		calendar =  $('#calendar').fullCalendar(
 		{
-			locale: 'fr',
-			timeFormat: 'hh:mm',
-			height: 750,
-			header:
-			{
-				left: 'title',
-				center: 'agendaDay,agendaWeek,month',
-				right: 'prev,next today'
-			},
-			editable: false,
-			firstDay: 1,
-			selectable: true,
-			defaultView: 'agendaWeek',
+			 locale: 'fr'
+			,timeFormat: 'hh:mm'
+			
+			,header:{left: 'title',	center: 'agendaDay,agendaWeek,month', right: 'prev,next today'}
+			,editable: false
+			,firstDay: 1
+			,selectable: true
+			,defaultView: 'agendaWeek'
 
-			columnHeader: true,
-			columnHeaderFormat: 'dddd DD',
+			,columnHeader: true
+			,columnHeaderFormat: 'dddd DD'
 
-            eventSources:
+			,allDaySlot:false
+			,minTime:"07:00:00"
+			,maxTime:"22:00:00"
+
+            ,eventSources:
             [
 				{
 					id: 1,
@@ -79,9 +79,9 @@
 					endParam: "stop",
 					className: "slot-available"
 				}
-			],
+			]
 
-			eventClick: function(calEvent, jsEvent, view)
+			,eventClick: function(calEvent, jsEvent, view)
 			{
 				if(calEvent.source.className.indexOf('slot-available') > -1)
 				{
@@ -136,7 +136,7 @@ function cancelBooking(id) {
 	var objFields = {
 		 TL_AJAX : true
 		,module : <?= $this->module_id ?>
-		,action : 'cancelBooking'
+		,action : 'deleteBooking'
 		,booking : id
 	};
 

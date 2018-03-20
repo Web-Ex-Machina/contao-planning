@@ -3,27 +3,303 @@
 <?php $this->block('content'); ?>
 
 <?php if($this->blnError): ?>
-	<p class="error"><?= $this->strError ?></p>
+<p class="error"><?= $this->strError ?></p>
 <?php else: ?>
+
+<style type="text/css">
+	.fc-day-header{text-transform:capitalize;}
+	.fc-event-container .booking-current{background:#c0392b !important;}
+	.fc-time-grid-event .fc-time{display:none !important;}
+
+	.slot-available{transition:all 0.5s;cursor:pointer;background-color:#7f8c8d;border-color:#7f8c8d;}
+	.slot-available:hover,.slot-available.selected{background-color:#2980b9 !important;border-color:#2980b9 !important;}
+
+	#updateDates .modal-lg{max-width:1400px;}
+
+	.resume .updated{font-style:italic;}
+</style>
+
+<div class="resume container">
+	<h2>Mon rendez-vous</h2>
+
+	<div class="card mb-3">
+		<div class="card-header">Date & Type</div>
+		<div class="card-body">
+			<p>Votre rendez-vous est prévu pour <strong data-date="<?= $this->booking->date ?>" class="date">le <span class="day"><?= date('d/m/Y', $this->booking->date) ?></span>, de <span class="start"><?= date('H:i', $this->booking->date) ?></span> à <span class="end"><?= date('H:i', $this->booking->dateEnd) ?></span></strong> pour le sujet suivant : <strong data-bookingtype="<?=  $this->bookingType['id'] ?>" class="bookingType"><?= $this->bookingType['title'] ?></strong></p>
+			<?php if($this->canUpdate): ?>
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateDates">Modifier ma date de rendez-vous</button>
+			<?php endif; ?>
+		</div>
+	</div>
+
+	<div class="card mb-3">
+		<div class="card-header">Mes informations</div>
+		<div class="card-body">
+			<p>
+				Votre nom de famille : <span class="lastname"><?= $this->booking->lastname ?></span><br />
+				Votre prénom : <span class="firstname"><?= $this->booking->firstname ?></span><br />
+				Votre numéro de téléphone : <span class="phone"><?= $this->booking->phone ?></span><br />
+				Votre adresse email : <span class="email"><?= $this->booking->email ?></span><br />
+				Vos commentaires : <span class="comments"><?= strip_tags($this->booking->comments) ?></span><br />
+			</p>
+			<?php if($this->canUpdate): ?>
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateInfos">Modifier mes informations</button>
+			<?php endif; ?>
+		</div>
+	</div>
 	
-	<h2>Modification de réservation</h2>
-	<p>Texte Disclaimer</p>
+	<div class="text-right">
+		<?php if($this->canUpdate): ?>
+		<button type="button" class="btn btn-lg btn-success confirmUpdate">Valider mes modifications</button>
+		<?php else: ?>
+		<p><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['cannotUpdateBooking'] ?></p>
+		<?php endif; ?>
 
-	<p>Champs du RDV en form, pour une modification</p>
-	<p>Un bouton permettant de changer le créneau</p>
+		<?php if($this->canCancel): ?>
+		<button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#cancelBooking">Annuler mon rendez-vous</button>
+		<?php else: ?>
+		<p><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['cannotCancelBooking'] ?></p>
+		<?php endif; ?>
+	</div>
+</div>
 
+<?php if($this->canUpdate): ?>
+<!-- Modal updateDates -->
+<div class="modal fade" id="updateDates" tabindex="-1" role="dialog" aria-labelledby="updateDatesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateDatesLabel">Modifier ma date de rendez-vous</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+				<div class="card-header">
+					<div class="form-group mb-0">
+						<label for="bookingType_select"><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['fieldBookingTypesLabel'] ?></label>
+						<select id="bookingType_select" name="bookingType" class="form-control" aria-describedby="bookingTypeHelp">
+						<?php foreach($this->bookingTypes as $arrBookingType): ?>
+							<option value="<?= $arrBookingType['id'] ?>"><?= $arrBookingType['title'] ?> (<?= $arrBookingType['duration'] ?>h)</option>
+						<?php endforeach; ?>
+						</select>
+						<small id="bookingTypeHelp" class="form-text text-muted"><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['fieldBookingTypesHelp'] ?></small>
+					</div>
+				</div>
+				<div class="card-body">
+					<div id="calendar"></div>
+				</div>
+			</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-	<?php if(!empty($this->bookingTypes)): ?>
-	  <p><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['bookingTypes'] ?></p>
-	  <select id="bookingType_select" name="bookingType">
-	  <?php foreach($this->bookingTypes as $arrBookingType): ?>
-		<option value="<?= $arrBookingType['id'] ?>"><?= $arrBookingType['title'] ?> (<?= $arrBookingType['duration'] ?>h)</option>
-	  <?php endforeach; ?>
-	  </select>
-	<?php endif; ?>
-	
+<!-- Modal updateDates -->
+<div class="modal fade" id="updateInfos" tabindex="-1" role="dialog" aria-labelledby="updateInfosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateInfosLabel">Modifier mes informations</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="<?= \Environment::get('request') ?>">
+			<input type="hidden" name="oldBooking" value="<?= $this->booking->id ?>" />
+			<input type="hidden" name="newBooking" value="0" />
+			<input type="hidden" name="bookingType" value="<?= $this->booking->bookingType ?>" />
+			<input type="hidden" name="start" value="<?= date('Y-m-d\TH:i:s', $this->booking->date) ?>" />
+
+	        <div class="form-group mb-3">
+	            <label for="lastname">Nom de famille</label>
+	            <input id="lastname" name="lastname" type="text" class="form-control" value="<?= $this->booking->lastname ?>" placeholder="Saisissez votre nom de famille">
+	        </div>
+	        <div class="form-group mb-3">
+	            <label for="firstname">Prénom</label>
+	            <input id="firstname" name="firstname" type="text" class="form-control" value="<?= $this->booking->firstname ?>" placeholder="Saisissez votre prénom">
+	        </div>
+	        <div class="form-group mb-3">
+	            <label for="phone">Téléphone</label>
+	            <input id="phone" name="phone" type="text" class="form-control" value="<?= $this->booking->phone ?>" placeholder="Saisissez votre numéro de téléphone">
+	        </div>
+	        <div class="form-group mb-3">    
+	            <label for="email">Email</label>
+	            <input id="email" name="email" type="email" class="form-control" value="<?= $this->booking->email ?>" placeholder="Saisissez votre adresse email">
+	        </div>
+	        <div class="form-group">
+	            <label for="comments">Informations additionnelles</label>
+	            <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Indiquez toute information pouvant être utile dans le cadre de cette réservation."><?= strip_tags($this->booking->comments) ?></textarea>
+	        </div>
+	    </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary updateInfos">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+	var calendar;
+	var objOldBooking = <?= json_encode($this->booking->row()) ?>;
+	$(document).ready(function(){
+		calendarDefaultConfig.eventSources[0].data.currentBooking = <?= $this->booking->id ?>;
+		calendarDefaultConfig.eventSources[1].data.currentBooking = <?= $this->booking->id ?>;
+		
+		calendarDefaultConfig.eventClick = function(calEvent, jsEvent, view){
+			if(calEvent.source.className.indexOf('slot-available') > -1){
+				// Update class of available slots
+				$('.slot-available').removeClass('selected');
+				$(this).addClass('selected');
+
+				lockBooking($('#updateDates #bookingType_select').val(), calEvent.start._i, $('#updateInfos input[name="newBooking"]').val()).then(function(data){
+					// Update the booking field
+					$('#updateInfos input[name="newBooking"]').val(data.booking.id);
+
+					// Update the fields value and resume
+					if(data.booking.bookingType != $('#updateInfos input[name="bookingType"]').val()){
+						$('#updateInfos input[name="bookingType"]').val(data.booking.bookingType);
+						$('.resume .bookingType').data('bookingtype', data.booking.bookingType).text($('#updateDates #bookingType_select option[value="'+data.booking.bookingType+'"]').text()).addClass('updated');
+					}
+
+					var startVal = moment.unix(data.booking.date);
+					var endVal = moment.unix(data.booking.dateEnd);
+
+					if(startVal.format("YYYY-MM-DD\THH:mm:ss") != $('#updateInfos input[name="start"]').val()){
+						$('.resume .date').data('date', data.booking.date);
+						$('#updateInfos input[name="start"]').val(startVal.format("YYYY-MM-DD\THH:mm:ss"));
+
+						if(startVal.format("DD/MM/YYYY") != $('.resume .day').text())
+							$('.resume .day').text(startVal.format("DD/MM/YYYY")).addClass("updated");
+
+						if(startVal.format("HH:mm") != $('.resume .start').text())
+							$('.resume .start').text(startVal.format("HH:mm")).addClass('updated');
+
+						if(endVal.format("HH:mm") != $('.resume .end').text())
+							$('.resume .end').text(endVal.format("HH:mm")).addClass('updated');
+					}
+				}).catch(function(err){
+				  toastr.error(err);
+				});
+			}
+		};
+		
+		// Update Dates Modal functions
+		var $modalDates = $('.mod_wem_display_planning #updateDates').first();
+		
+		$modalDates.bind('shown.bs.modal', function(e){
+			calendar =  $('#calendar').fullCalendar(calendarDefaultConfig);
+			$('#bookingType_select').bind('change', function(){
+				calendar.fullCalendar('refetchEventSources', 1);
+				calendar.fullCalendar('refetchEventSources', 2);
+			});
+		});
+
+		// Update Infos Modal functions
+		var $modalInfos = $('.mod_wem_display_planning #updateInfos').first();
+		$modalInfos.find('.btn.updateInfos').bind('click', function(){
+			if($('#updateInfos input[name="lastname"]').val() != $('.resume .lastname').text())
+				$('.resume .lastname').text($('#updateInfos input[name="lastname"]').val()).addClass('updated');
+
+			if($('#updateInfos input[name="firstname"]').val() != $('.resume .firstname').text())
+				$('.resume .firstname').text($('#updateInfos input[name="firstname"]').val()).addClass('updated');
+
+			if($('#updateInfos input[name="phone"]').val() != $('.resume .phone').text())
+				$('.resume .phone').text($('#updateInfos input[name="phone"]').val()).addClass('updated');
+
+			if($('#updateInfos input[name="email"]').val() != $('.resume .email').text())
+				$('.resume .email').text($('#updateInfos input[name="email"]').val()).addClass('updated');
+
+			if($('#updateInfos textarea[name="comments"]').val() != $('.resume .comments').text())
+				$('.resume .comments').text($('#updateInfos textarea[name="comments"]').val()).addClass('updated');
+
+			$modalInfos.modal('hide');
+		});
+
+		// Bind Validate button
+		$('.mod_wem_display_planning .confirmUpdate').bind('click', function(){
+			checkBookingDifferences().then(function(data){
+				updateBooking($modalInfos).then(function(data){
+					toastr.success(data);
+				}).catch(function(err){
+					toastr.error(err);
+				});
+			}).catch(function(err){
+				toastr.error(err);
+			});
+		});
+	});
+
+function checkBookingDifferences(){
+	return new Promise(function(resolve,reject){
+		var blnNoDifferences = true;
+		if(objOldBooking.lastname != $('.resume .lastname').text())
+			resolve("lastname");
+		if(objOldBooking.firstname != $('.resume .firstname').text())
+			resolve("firstname");
+		if(objOldBooking.phone != $('.resume .phone').text())
+			resolve("phone");
+		if(objOldBooking.email != $('.resume .email').text())
+			resolve("email");
+		if(objOldBooking.comments != $('.resume .comments').text())
+			resolve("comments");
+		if(objOldBooking.date != $('.resume .date').data('date'))
+			resolve("date");
+		if(objOldBooking.bookingType != $('.resume .bookingType').data('bookingtype'))
+			resolve("bookingType");
+
+		reject("Le rendez-vous n'a pas été modifié");
+	});
+}
+
+</script>
 <?php endif; ?>
 
-<?= $this->calendar ?>
+<?php if($this->canCancel): ?>
+<!-- Modal cancelBooking -->
+<div class="modal fade" id="cancelBooking" tabindex="-1" role="dialog" aria-labelledby="cancelBookingLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelBookingLabel">Annuler mon rendez-vous</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Êtes-vous sûr d'annuler votre rendez-vous ?</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non, je conserve mon rendez-vous</button>
+        <button type="button" data-booking="<?= $this->booking->id ?>" class="btn btn-danger cancelBooking">Oui, je confirme vouloir annuler mon rendez-vous</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		var $modalCancel = $('.mod_wem_display_planning #cancelBooking').first();
+
+		$modalCancel.find('.cancelBooking').bind('click', function(){
+			cancelBooking($(this).data('booking')).then(function(data){
+			  toastr.success(data);
+			}).catch(function(err){
+			  toastr.error(err);
+			});
+		});
+	});
+</script>
+<?php endif; ?>
+
+<?php endif; ?>
 
 <?php $this->endblock(); ?>

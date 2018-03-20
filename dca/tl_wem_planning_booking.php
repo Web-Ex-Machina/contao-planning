@@ -21,6 +21,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 		'ptable'                      => 'tl_wem_planning',
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
+		'notCreatable'				  => true,
 		'sql' => array
 		(
 			'keys' => array
@@ -37,7 +38,8 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 		'sorting' => array
 		(
 			'mode'                    => 4,
-			'fields'                  => array('date DESC'),
+			'fields'                  => array('date'),
+			'flag'					  => 1,
 			'headerFields'            => array('title', 'tstamp'),
 			'panelLayout'             => 'filter;sort,search,limit',
 			'child_record_callback'   => array('tl_wem_planning_booking', 'listItems'),
@@ -159,8 +161,6 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['dateEnd'],
 			'default'                 => time(),
 			'exclude'                 => true,
-			'filter'                  => true,
-			'sorting'                 => true,
 			'flag'                    => 8,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
@@ -230,8 +230,6 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['isUpdate'],
 			'exclude'                 => true,
-			'filter'                  => true,
-			'flag'                    => 1,
 			'inputType'               => 'checkbox',
 			'eval'                    => array('doNotCopy'=>true, 'submitOnChange'=>true),
 			'sql'                     => "char(1) NOT NULL default ''"
@@ -257,7 +255,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning_booking'] = array
 /**
  * Display a legend for webmasters
  */
-if(Input::get('table') == 'tl_wem_planning_booking')
+if((Input::get('do') == 'wem_booking' || Input::get('table') == 'tl_wem_planning_booking') && !Input::get('act'))
 {
 	$strBookingStatusLegend = '
 		<div class="tl_wem_planning_booking legend">
@@ -273,13 +271,48 @@ if(Input::get('table') == 'tl_wem_planning_booking')
 }
 
 /**
+ * ToubadooTwist all the DCA for better UX
+ */
+if(Input::get('do') == 'wem_booking')
+{
+	$GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['sorting']['mode'] = 1;
+	$GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['label']['fields'] = array('title');
+	$GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['label']['format'] = '%s';
+	$GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['label']['label_callback'] = $GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['sorting']['child_record_callback'];
+
+	unset($GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['global_operations']['all']);
+	unset($GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['operations']['edit']);
+	unset($GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['operations']['copy']);
+	unset($GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['operations']['cut']);
+	unset($GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['operations']['delete']);
+
+	$GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['operations']['confirm'] = array
+	(
+		'label'               => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['confirmBooking'],
+		'href'                => 'key=confirmBooking',
+		'icon'                => 'system/modules/wem-contao-planning/assets/icon_confirmed.png',
+		'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['WEM']['PLANNING']['BE']['confirmBooking'] . '\'))return false;Backend.getScrollOffset()"'
+	);
+	$GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['operations']['deny'] = array
+	(
+		'label'               => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['denyBooking'],
+		'href'                => 'key=denyBooking',
+		'icon'                => 'system/modules/wem-contao-planning/assets/icon_denied.png',
+		'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['WEM']['PLANNING']['BE']['denyBooking'] . '\'))return false;Backend.getScrollOffset()"'
+	);
+
+	// Add the messages
+	\Message::addInfo(sprintf("Vous avez %s rendez-vous à traiter", \WEM\Planning\Model\Booking::countBy("status", "pending")));
+	\Message::addConfirmation(sprintf("Vous avez %s rendez-vous à venir", \WEM\Planning\Model\Booking::countBy("status", "confirmed")));
+}
+
+/**
  * Provide miscellaneous methods that are used by the data configuration array.
  *
  * @author Web ex Machina <https://www.webexmachina.fr>
  */
 class tl_wem_planning_booking extends Backend
 {
-
 	/**
 	 * Import the back end user object
 	 */
@@ -296,8 +329,8 @@ class tl_wem_planning_booking extends Backend
 	 */
 	public function getTypeLabels($objDc)
 	{
-		$objPlanning = $this->Database->prepare("SELECT * FROM tl_wem_planning_booking WHERE id = ?")->limit(1)->execute($objDc->id);
-		$objBookingTypes = $this->Database->prepare("SELECT * FROM tl_wem_planning_booking_type WHERE pid = ? ORDER BY duration ASC")->execute($objPlanning->pid);
+		$objBooking = $this->Database->prepare("SELECT * FROM tl_wem_planning_booking WHERE id = ?")->limit(1)->execute($objDc->id);
+		$objBookingTypes = $this->Database->prepare("SELECT * FROM tl_wem_planning_booking_type WHERE pid = ? ORDER BY duration ASC")->execute($objBooking->pid);
 		$arrData = array();
 
 		if(!$objBookingTypes || $objBookingTypes->count() == 0)
@@ -336,7 +369,7 @@ class tl_wem_planning_booking extends Backend
 			case 'canceled': 	$strHtml .= '<i class="'.$arrRow['status'].' fa fa-undo"></i>'; break;
 		}
 		
-		$strHtml .= '<strong>Réservation du '.Date::parse(Config::get('datimFormat'), $arrRow['date']).' : '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status'][$arrRow['status']].'</strong>';
+		$strHtml .= '<strong>Rendez-vous du '.Date::parse(Config::get('datimFormat'), $arrRow['date']).' : '.$GLOBALS['TL_LANG']['tl_wem_planning_booking']['status'][$arrRow['status']].'</strong>';
 
 		$strHtml .= '<br />'.$arrRow['firstname'].' '.$arrRow['lastname'].' pour '.$objBookingType->title.' ('.$objBookingType->duration.'h)';
 

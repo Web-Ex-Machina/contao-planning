@@ -3,21 +3,29 @@
     <body>
       <trans-unit id="WEM.PLANNING.MODAL.title">
         <source>Booking type</source>
-        <target>Type de réservation</target>
+        <target>Type de rendez-vous</target>
       </trans-unit>
 
       <trans-unit id="WEM.PLANNING.LABELS.titleBookingTypes">
         <source>Booking form</source>
         <target>Formulaire de réservation</target>
       </trans-unit>
+      <trans-unit id="WEM.PLANNING.LABELS.fieldBookingTypesLabel">
+        <source>Rendez-vous type</source>
+        <target>Type de rendez-vous</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.LABELS.fieldBookingTypesHelp">
+        <source>Please select the rendez-vous type you want.</source>
+        <target>Veuillez sélectionner le type de rendez-vous souhaité.</target>
+      </trans-unit>
 
       <trans-unit id="WEM.PLANNING.MSG.bookingSuccess">
         <source>The booking request has been submitted.</source>
-        <target>La demande de réservation a été envoyée.</target>
+        <target>La demande de rendez-vous a été envoyée.</target>
       </trans-unit>
       <trans-unit id="WEM.PLANNING.MSG.bookingCancelSuccess">
         <source>The booking has been cancelled.</source>
-        <target>La réservation a été annulée.</target>
+        <target>Le rendez-vous a été annulé.</target>
       </trans-unit>
 
       <trans-unit id="WEM.PLANNING.ERR.planningNotFound">
@@ -38,11 +46,11 @@
       </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.noBookingTypeSent">
         <source>Please select a booking type first.</source>
-        <target>Veuillez tout d'abord sélectionner un type de réservation.</target>
+        <target>Veuillez tout d'abord sélectionner un type de rendez-vous.</target>
       </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.invalidBookingType">
         <source>Booking type is invalid.</source>
-        <target>Le type de réservation est invalide.</target>
+        <target>Le type de rendez-vous est invalide.</target>
       </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.noDatesSent">
         <source>Start and Stop dates are missing or invalid.</source>
@@ -54,15 +62,19 @@
       </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.noBookingSent">
         <source>Booking parameter is missing/invalid, please retry.</source>
-        <target>Le paramètre de réservation est manquant/invalide, veuillez réessayer.</target>
+        <target>Le paramètre de rendez-vous est manquant/invalide, veuillez réessayer.</target>
       </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.bookingNotFound">
         <source>The booking was not found or doesn't exist anymore.</source>
-        <target>La réservation n'a pas été trouvée ou n'existe plus.</target>
+        <target>Le rendez-vous n'a pas été trouvé ou n'existe plus.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.bookingUpdateError">
+        <source>An error occured when updating the booking, please refresh the page and retry.</source>
+        <target>Une erreur est survenue lors de la mise à jour du rendez-vous. Veuillez rafraichir la page et réessayer.</target>
       </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.bookingCancelError">
         <source>An error occured when cancelling the booking, please refresh the page and retry.</source>
-        <target>Une erreur est survenue lors de l'annulation de la réservation. Veuillez rafraichir la page et réessayer.</target>
+        <target>Une erreur est survenue lors de l'annulation du rendez-vous. Veuillez rafraichir la page et réessayer.</target>
       </trans-unit>
       <trans-unit id="WEM.PLANNING.ERR.bookingFormErrors">
         <source>The form contains errors.</source>
@@ -78,8 +90,21 @@
       </trans-unit>
 
       <trans-unit id="WEM.PLANNING.ERR.cannotUpdateBooking">
-        <source>You are not allowed to update booking.</source>
-        <target>Vous n'êtes pas autorisé à mettre à jour une réservation.</target>
+        <source>You are not allowed to update this booking.</source>
+        <target>Vous n'êtes pas autorisé à mettre à jour ce rendez-vous.</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.ERR.cannotCancelBooking">
+        <source>You are not allowed to cancel this booking.</source>
+        <target>Vous n'êtes pas autorisé à annuler ce rendez-vous.</target>
+      </trans-unit>
+
+      <trans-unit id="WEM.PLANNING.BE.confirmBooking">
+        <source>Are you sure to confirm this booking ?</source>
+        <target>Êtes-vous sûr de vouloir confirmer ce rendez-vous ?</target>
+      </trans-unit>
+      <trans-unit id="WEM.PLANNING.BE.denyBooking">
+        <source>Are you sure to deny this booking ?</source>
+        <target>Êtes-vous sûr de vouloir refuser ce rendez-vous ?</target>
       </trans-unit>
     </body>
   </file>

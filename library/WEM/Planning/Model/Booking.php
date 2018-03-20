@@ -188,9 +188,10 @@ class Booking extends Model
 	 * @param  [Integer] $intPid 	[Planning ID]
 	 * @param  [Integer] $intStart 	[Start date]
 	 * @param  [Integer] $intStop 	[Stop date]
+	 * @param  [String]  $strQuery 	[Additionnal and optionnal query]
 	 * @return [Integer]			[Number of booking matching the query]
 	 */
-	public static function countByDates($intPid, $intStart, $intStop)
+	public static function countByDates($intPid, $intStart, $intStop, $strQuery = '')
 	{
 		// Rules, because it's tricky
 		// r1 : Restrict by PID (Planning ID)
@@ -218,6 +219,9 @@ class Booking extends Model
 						(date <= $intStart AND dateEnd >= $intStop)
 					)
 			";
+
+			if($strQuery != '')
+				$strSql .= $strQuery;
 
 			$objBookings = \Database::getInstance()->prepare($strSql)->execute();
 			return $objBookings->count();

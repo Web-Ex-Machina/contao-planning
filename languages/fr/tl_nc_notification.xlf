@@ -8,27 +8,27 @@
 
       <trans-unit id="tl_nc_notification.type.confirm_booking.0">
         <source>Confirm booking</source>
-        <target>Confirmation de réservation</target>
+        <target>Confirmation de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.confirm_booking.1">
         <source>Notification who'll be sent on a booking confirmation</source>
-        <target>Notification envoyée lors d'une confirmation de réservation</target>
+        <target>Notification envoyée lors d'une confirmation de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.update_booking.0">
         <source>Update booking</source>
-        <target>Modification de réservation</target>
+        <target>Modification de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.update_booking.1">
         <source>Notification who'll be sent on a booking update</source>
-        <target>Notification envoyée lors d'une modification de réservation</target>
+        <target>Notification envoyée lors d'une modification de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.cancel_booking.0">
         <source>Cancel Booking</source>
-        <target>Annulation de réservation</target>
+        <target>Annulation de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.cancel_booking.1">
         <source>Notification who'll be sent on a booking cancelation</source>
-        <target>Notification envoyée lors d'une annulation de réservation</target>
+        <target>Notification envoyée lors d'une annulation de rendez-vous</target>
       </trans-unit>
     </body>
   </file>

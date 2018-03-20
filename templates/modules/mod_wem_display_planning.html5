@@ -2,21 +2,46 @@
 
 <?php $this->block('content'); ?>
 
-<?php if($this->blnError): ?>
-	<p class="error"><?= $this->strError ?></p>
-<?php else: ?>
-	
-	<?php if(!empty($this->bookingTypes)): ?>
-	  <p><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['bookingTypes'] ?></p>
-	  <select id="bookingType_select" name="bookingType">
-	  <?php foreach($this->bookingTypes as $arrBookingType): ?>
-		<option value="<?= $arrBookingType['id'] ?>"><?= $arrBookingType['title'] ?> (<?= $arrBookingType['duration'] ?>h)</option>
-	  <?php endforeach; ?>
-	  </select>
-	<?php endif; ?>
-	
-<?php endif; ?>
+<style type="text/css">
+	.fc-day-header{text-transform:capitalize;}
+	.fc-event-container .booking-current{background:red !important;}
+	.fc-time-grid-event .fc-time{display:none !important;}
+	.fc-view .mask{position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;color: #fff;background: rgba(0,0,0,0.75);z-index: 99;display: flex;justify-content: center;flex-direction: column;}
+</style>
 
-<?= $this->calendar ?>
+<?php if($this->blnError): ?>
+<p class="error"><?= $this->strError ?></p>
+<?php else: ?>
+
+<div class="card">
+	<div class="card-header">
+		<div class="form-group mb-0">
+			<label for="bookingType_select"><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['fieldBookingTypesLabel'] ?></label>
+			<select id="bookingType_select" name="bookingType" class="form-control" aria-describedby="bookingTypeHelp">
+			<?php foreach($this->bookingTypes as $arrBookingType): ?>
+				<option value="<?= $arrBookingType['id'] ?>"><?= $arrBookingType['title'] ?> (<?= $arrBookingType['duration'] ?>h)</option>
+			<?php endforeach; ?>
+			</select>
+			<small id="bookingTypeHelp" class="form-text text-muted"><?= $GLOBALS['TL_LANG']['WEM']['PLANNING']['LABELS']['fieldBookingTypesHelp'] ?></small>
+		</div>
+	</div>
+	<div class="card-body">
+		<div id="calendar"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var calendar;
+	$(document).ready(function(){
+		calendar =  $('#calendar').fullCalendar(calendarDefaultConfig);
+
+		$('#bookingType_select').bind('change', function(){
+			calendar.fullCalendar('refetchEventSources', 1);
+			calendar.fullCalendar('refetchEventSources', 2);
+		});
+	});
+</script>
+
+<?php endif; ?>
 
 <?php $this->endblock(); ?>

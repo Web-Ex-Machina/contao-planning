@@ -12,6 +12,8 @@ namespace WEM\Planning\Module;
 
 use \RuntimeException as Exception;
 use Contao\Date;
+use Contao\Input;
+use Contao\Validator;
 use WEM\Planning\Model\Planning;
 use WEM\Planning\Model\BookingType;
 use WEM\Planning\Model\Slot;
@@ -156,6 +158,7 @@ abstract class ModulePlanning extends \Module
 
 			// Then, retrieve all the available slots for the date wanted
 			$arrSlots = array();
+			$arrSortSlots = array();
 			foreach($this->slots as $arrSlot)
 			{
 				// Format the open/close timestamps of the slot tested
@@ -210,17 +213,31 @@ abstract class ModulePlanning extends \Module
 				if($intStart < $intOpen || $intStop > $intClose)
 					continue;
 
-				// Skip if this slot is a "forbid" one
-				if(!$arrSlot['canBook'])
-					continue;
-
 				$arrSlots[] = $arrSlot;
+				$arrSortSlots[] = $arrSlot['sorting'];
 			}
 
 			// Check if there is a slot who allow booking for the current date
 			if(empty($arrSlots))
 				return false;
 
+			// Order the slots by their sorting value, who determine the "priority" (Asc)
+			array_multisort($arrSortSlots, SORT_DESC, $arrSlots);
+
+			// And check if the first slot is a slot who forbid booking
+			if(!$arrSlots[0]['canBook'])
+				return false;
+
+			// Unlock slot if we are in "update" mode, we'll just exclude the "exact" slot but the others will be accepted
+			if(Input::get('update') && $this->objBooking)
+			{
+				if($this->objBooking->date == $intStart && $this->objBooking->dateEnd == $intStop)
+					return false;
+				else
+					return true;
+			}
+
+			// Check if we already have bookings on this date
 			if(Booking::countByDates($this->wem_planning, $intStart, $intStop) > 0)
 				return false;
 			
@@ -252,10 +269,11 @@ abstract class ModulePlanning extends \Module
 				$intStop = $this->stop;
 
 			// Adjust start setting
+			// Rule : User cannot book in the next 24h
 			if($intStart <= time())
 				$intStart = strtotime("+1 day", $intStart);
 
-			// TODO : Adjust the "cannot reserve before one day" setting by a specific field in the planning
+			// Round the start by the start hour of the start date
 			$objDate = new Date(date("Y-m-d-H", $intStart), "Y-m-d-H");
 			$intStart = $objDate->tstamp;
 
@@ -293,10 +311,9 @@ abstract class ModulePlanning extends \Module
 			if(!$this->slots)
 				$this->slots = $this->findSlots();
 
-			while($intTmpTstamp < $this->stop)
+			while($intTmpTstamp < $intStop)
 			{
 				// Add 30 minutes gap between each slot
-				// TODO : Adjust the "gap between each slot" with a more arbitrary one, a specific field in the planning or maybe the min duration in booking types ?
 				$intTmpTstamp += 1800;
 
 				// Check if we can add the slot to the available ones
@@ -304,10 +321,18 @@ abstract class ModulePlanning extends \Module
 					continue;
 
 				// If it's okay, add the slot.
-				$arrItems[] = [
+				// Deprecated but keep this as a reminder
+				/*$arrItems[] = [
 					"title" => "",
 					"start" => date("Y-m-d\TH:i:s", $intTmpTstamp),
 					"end"   => date("Y-m-d\TH:i:s", $intTmpTstamp + $intSlotDuration)
+				];*/
+
+				// Alternative mode - Display slots on "30 minutes fake slots" to clarify in full calendar
+				$arrItems[] = [
+					"title" => date('H:i', $intTmpTstamp).' - '.date('H:i', $intTmpTstamp + $intSlotDuration),
+					"start" => date("Y-m-d\TH:i:s", $intTmpTstamp),
+					"end"   => date("Y-m-d\TH:i:s", $intTmpTstamp + 1799)
 				];
 			}
 
@@ -334,6 +359,455 @@ abstract class ModulePlanning extends \Module
 				else
 					return $i;
 			}
+		}
+	}
+
+	/**
+	 * Handle Planning Ajax Requests
+	 */
+	protected function executeAjaxRequest()
+	{
+		$arrResponse = array();
+
+		try
+		{
+			switch(Input::post('action'))
+			{
+				case 'findBookings':
+					// Adjust start date - we don't want to retrieve bookings before the current time
+					if($this->start < time())
+						$this->start = time();
+
+					$arrBookings = $this->findBookings();
+					$arrItems = array();
+
+					if(is_array($arrBookings))
+					{
+						foreach($arrBookings as $arrBooking)
+						{
+							// Parse a class for each item
+							$strClass = 'booking';
+							$strTitle = "Réservé";
+
+							// Handle the exclusion of a specific booking, when we want to update 
+							if(Input::post('currentBooking') && $arrBooking['id'] == Input::post('currentBooking'))
+							{
+								$strClass = 'booking-current';
+								$strTitle = 'RDV actuel';
+							}
+
+							$arrItems[] = 
+							[
+								"title" => $strTitle,
+								"start" => $arrBooking['start'],
+								"end"   => $arrBooking['end'],
+								"className" => $strClass,
+							];
+						}
+					}
+
+					echo json_encode($arrItems, true);
+					die;
+
+				break;
+
+				case 'findAvailableSlots':
+					// Throw exception if we don't have booking type
+					if(!Input::post('bookingType'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingTypeSent']);
+
+					// Adjust start date - we don't want to retrieve slots before the current time
+					if($this->start < time())
+						$this->start = time();
+
+					// Retrieve available slots for the bookingType asked
+					$arrItems = $this->findAvailableSlots(Input::post('bookingType'));
+
+					// If there is no available slots, find the first one, starting with the current stop date
+					if(!$arrItems || empty($arrItems))
+					{
+						$intStart = $this->stop;
+						$intStop = $intStart + 24*60*60;
+						$intEndLoop = $intStop + 30*24*60*60;
+
+						// Build a loop to find the first available slot
+						while($intStart < $intEndLoop)
+						{
+							$arrItems = $this->findAvailableSlots(Input::post('bookingType'), $intStart, $intStop);
+
+							if(!empty($arrItems))
+							{
+								$arrResponse = array('status'=>'gotofirstslotavailable', 'slot'=>$arrItems[0]);
+								break(2);
+							}
+
+							$intStart = $intStop;
+							$intStop = $intStart + 24*60*60;
+						}
+
+						// Fallback message if we get out the loop without found any available slot
+						throw new Exception("Pas de créneau disponible sur les 30 prochains jours");
+					}
+
+					echo json_encode($arrItems, true);
+					die;
+
+				break;
+
+				case 'draftBooking':
+					// Throw exception if we don't have booking type
+					if(!Input::post('bookingType'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingTypeSent']);
+
+					// Throw exception if we don't have start/stop dates
+					if(!Input::post('start'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noDatesSent']);
+
+					// Check if the booking type is valid
+					if(!array_key_exists(Input::post('bookingType'), $this->bookingTypes))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['invalidBookingType']);
+
+					// Check if the slot is still available
+					$intDuration = $this->bookingTypes[Input::post('bookingType')]["duration"] * 60 * 60;
+					if(!$this->checkIfSlotIsAvailable($intDuration, $this->start+1))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['slotIsNotAvailableAnymore']);
+
+					// Create/Update a booking if we pass an ID
+					if(Input::post('updateBooking') > 0)
+						$objBooking = Booking::findByPk(Input::post('updateBooking'));
+						
+					if(!$objBooking){
+						$objBooking = new Booking();
+						$objBooking->pid = $this->wem_planning;
+						$objBooking->created_at = time();
+						$objBooking->status = "drafted";
+						$objBooking->token = md5(uniqid(mt_rand(), true));
+					}
+
+					// Create the booking
+					$objBooking->tstamp = time();
+					$objBooking->date = $this->start;
+					$objBooking->dateEnd = $objBooking->date + $intDuration;
+					$objBooking->bookingType = Input::post('bookingType');
+					
+					// Throw exception if the booking has not been saved
+					if(!$objBooking->save())
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingCreationError']);
+
+					// In Update Mode, we want to lock a slot, but we don't want to return a Modal
+					if(Input::get('update'))
+					{
+						$arrResponse['status'] = 'success';
+						$arrResponse['booking'] = $objBooking->row();
+					}
+					else
+					{
+						// And parse the form to fill
+						$objTemplate = new \FrontendTemplate("wem_calendar_booking_form");
+						$objTemplate->start = $objBooking->date;
+						$objTemplate->stop = $objBooking->dateEnd;
+						$objTemplate->bookingType = $this->bookingTypes[$objBooking->bookingType];
+						$objTemplate->module_id = $this->id;
+						$objTemplate->booking_id = $objBooking->id;
+
+						// Echo the template and die
+						echo $objTemplate->parse();
+						die;
+					}
+
+				break;
+
+				case 'confirmBooking':
+					// Throw exception if we don't have booking type
+					if(!Input::post('booking'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingSent']);
+
+					// Get the Booking model
+					$objBooking = Booking::findByPk(Input::post('booking'));
+
+					// Throw exception if booking doesn't exists
+					if(!$objBooking)
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingNotFound']);
+
+					// Call the validator function
+					$this->validateInputs();
+
+					// Then update the form
+					$objBooking->tstamp = time();
+					$objBooking->status = 'pending'; 
+					$objBooking->lastname = Input::post('lastname');
+					$objBooking->firstname = Input::post('firstname');
+					$objBooking->phone = Input::post('phone');
+					$objBooking->email = Input::post('email');
+					$objBooking->comments = Input::post('comments');
+
+					// Throw exception if the booking has not been saved
+					if(!$objBooking->save())
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingCreationError']);
+
+					// Fetch the notifications to send
+					$this->sendNotifications('confirm_booking', $objBooking);
+
+					// And prepare the response
+					$arrResponse['status'] = 'success';
+					$arrResponse['message'] = $GLOBALS['TL_LANG']['WEM']['PLANNING']['MSG']['bookingSuccess'];
+
+				break;
+
+				case 'updateBooking':
+					// Throw exception if we don't have booking type
+					if(!Input::post('oldBooking'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingSent']);
+
+					// Get the Booking model
+					$objOldBooking = Booking::findByPk(Input::post('oldBooking'));
+
+					// Throw exception if booking doesn't exists
+					if(!$objOldBooking)
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingNotFound']);
+
+					// Cancel the current booking
+					$objOldBooking->tstamp = time();
+					$objOldBooking->status = "canceled";
+
+					// Throw exception if we don't have booking type
+					if(!Input::post('bookingType'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingTypeSent']);
+
+					// Throw exception if we don't have start/stop dates
+					if(!Input::post('start'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noDatesSent']);
+
+					// Check if the booking type is valid
+					if(!array_key_exists(Input::post('bookingType'), $this->bookingTypes))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['invalidBookingType']);
+
+					// Check if the slot is still available
+					$intDuration = $this->bookingTypes[Input::post('bookingType')]["duration"] * 60 * 60;
+					if(!$this->checkIfSlotIsAvailable($intDuration, $this->start+1))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['slotIsNotAvailableAnymore']);
+
+					// Create/Update a booking if we pass an ID
+					if(Input::post('newBooking') > 0)
+						$objNewBooking = Booking::findByPk(Input::post('newBooking'));
+						
+					if(!$objNewBooking){
+						$objNewBooking = new Booking();
+						$objNewBooking->pid = $this->wem_planning;
+						$objNewBooking->created_at = time();
+						$objNewBooking->token = md5(uniqid(mt_rand(), true));
+					}
+
+					$objNewBooking->tstamp = time();
+					$objNewBooking->status = "pending";
+					$objNewBooking->date = $this->start;
+					$objNewBooking->dateEnd = $objNewBooking->date + $intDuration;
+					$objNewBooking->bookingType = Input::post('bookingType');
+					$objNewBooking->lastname = Input::post('lastname');
+					$objNewBooking->firstname = Input::post('firstname');
+					$objNewBooking->phone = Input::post('phone');
+					$objNewBooking->email = Input::post('email');
+					$objNewBooking->comments = Input::post('comments');
+					$objNewBooking->isUpdate = 1;
+					$objNewBooking->bookingSrc = $objOldBooking->id;
+
+					// Throw exception if the old booking or the new booking has not been saved
+					if(!$objOldBooking->save() || !$objNewBooking->save())
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingUpdateError']);
+
+					// Fetch the notifications to send
+					$this->sendNotifications('update_booking', $objNewBooking);
+
+					// And build the answer
+					$arrResponse['status'] = 'success';
+					$arrResponse['message'] = $GLOBALS['TL_LANG']['WEM']['PLANNING']['MSG']['bookingUpdateSuccess'];
+				break;
+
+				case 'cancelBooking':
+					// Throw exception if we don't have booking type
+					if(!Input::post('booking'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingSent']);
+
+					// Get the Booking model
+					$objBooking = Booking::findByPk(Input::post('booking'));
+
+					// Throw exception if booking doesn't exists
+					if(!$objBooking)
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingNotFound']);
+
+					$objBooking->tstamp = time();
+					$objBooking->status = "canceled";
+
+					// Throw exception if the booking has not been saved
+					if(!$objBooking->save())
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingCancelError']);
+
+					// Fetch the notifications to send
+					$this->sendNotifications('cancel_booking', $objBooking);
+
+					// And build the answer
+					$arrResponse['status'] = 'success';
+					$arrResponse['message'] = $GLOBALS['TL_LANG']['WEM']['PLANNING']['MSG']['bookingCancelSuccess'];
+
+				break;
+
+				case 'deleteBooking':
+					// Throw exception if we don't have booking type
+					if(!Input::post('booking'))
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingSent']);
+
+					// Get the Booking model
+					$objBooking = Booking::findByPk(Input::post('booking'));
+
+					// Throw exception if booking doesn't exists
+					if(!$objBooking)
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingNotFound']);
+
+					// Delete the booking from DB
+					if(!$objBooking->delete())
+						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingCancelError']);
+
+					// And build the answer
+					$arrResponse['status'] = 'success';
+					$arrResponse['message'] = $GLOBALS['TL_LANG']['WEM']['PLANNING']['MSG']['bookingCancelSuccess'];
+
+				break;
+
+				default:
+					throw new Exception(sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['unknownAjaxAction']), Input::post('action'));
+			}
+		}
+		catch(Exception $e)
+		{
+			$arrResponse['status'] = 'error';
+			$arrResponse['message'] = $e->getMessage();
+		}
+
+		$arrResponse['rt'] = \RequestToken::get();
+
+		echo json_encode($arrResponse, true);
+		die;
+	}
+
+	/**
+	 * Fetch, prepare and send Planning Notifications
+	 * @param  [String] $strNotificationType [Notification type]
+	 * @param  [Object] $objBooking          [Booking Model]
+	 */
+	protected function sendNotifications($strNotificationType, $objBooking)
+	{
+		try
+		{
+			// Fetch the notifications to send
+			$objNotifications = \Database::getInstance()->execute("SELECT id,title FROM tl_nc_notification WHERE type='$strNotificationType' ORDER BY title");
+
+			if($objNotifications->count() > 0)
+			{
+				$arrTokens = $this->prepareNotificationTokens($objBooking);
+
+				while($objNotifications->next())
+				{
+					$objNotification = \NotificationCenter\Model\Notification::findByPk($objNotifications->id);
+					$objNotification->send($arrTokens);
+				}
+			}
+		}
+		catch(Exception $e)
+		{
+			throw $e;
+		}
+	}
+
+	/**
+	 * Prepare notifications tokens
+	 * @param  [Object] $objBooking [Booking Model]
+	 * @return [Array]              [Tokens Array]
+	 */
+	protected function prepareNotificationTokens($objBooking)
+	{
+		try
+		{
+			// Prepare tokens
+			$arrTokens = array();
+
+			// Booking tokens
+			foreach($objBooking->row() as $strKey => $varValue)
+				$arrTokens["booking_".$strKey] = $varValue;
+
+			// Parse date tokens
+			$arrTokens["booking_day"] = date('d/m/Y', $objBooking->date);
+			$arrTokens["booking_hourStart"] = date('H:i', $objBooking->date);
+			$arrTokens["booking_hourEnd"] = date('H:i', $objBooking->dateEnd);
+
+			// Booking Type tokens
+			foreach($this->bookingTypes[$objBooking->bookingType] as $strKey => $varValue)
+				$arrTokens["bookingType_".$strKey] = $varValue;
+
+			// Build the update/cancel link
+			$strRequest = \Environment::get('base').\Environment::get('request');
+			$arrTokens['updateLink'] = $strRequest.'?update='.$objBooking->token;
+			$arrTokens['cancelLink'] = $strRequest.'?cancel='.$objBooking->token;
+
+			// Build the recipients
+			$arrTokens['user_email'] = $objBooking->email;
+
+			return $arrTokens;
+		}
+		catch(Exception $e)
+		{
+			throw $e;
+		}
+	}
+
+	/**
+	 * Validate Booking Input sent
+	 */
+	protected function validateInputs()
+	{
+		try
+		{
+			// Check and validate all fields
+			$arrExceptions = array();
+
+			if(!Input::post('lastname'))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['requiredFieldMissing'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['lastname'][0]);
+			if(!Input::post('firstname'))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['requiredFieldMissing'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['firstname'][0]);
+			if(!Input::post('phone'))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['requiredFieldMissing'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['phone'][0]);
+			if(!Input::post('email'))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['requiredFieldMissing'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['email'][0]);
+
+			// Break the function here if there is exceptions already.
+			if(!empty($arrExceptions))
+			{
+				$arrResponse["errors"] = $arrExceptions;
+				throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingFormErrors']);
+			}
+		
+			if(!Validator::isExtendedAlphanumeric(Input::post('lastname')))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['invalidField'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['lastname'][0]);
+			if(!Validator::isExtendedAlphanumeric(Input::post('firstname')))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['invalidField'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['firstname'][0]);
+			if(!Validator::isPhone(Input::post('phone')))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['invalidField'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['phone'][0]);
+			if(!Validator::isEmail(Input::post('email')))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['invalidField'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['email'][0]);
+			if(Input::post('comments') && !Validator::isExtendedAlphanumeric(Input::post('comments')))
+				$arrExceptions[] = sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['invalidField'], $GLOBALS['TL_LANG']['tl_wem_planning_booking']['comments'][0]);
+
+			// Break the function here if there is exceptions already.
+			if(!empty($arrExceptions))
+			{
+				$arrResponse["errors"] = $arrExceptions;
+				throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingFormErrors']);
+			}
+
+			return true;
+		}
+		catch(Exception $e)
+		{
+			throw $e;
 		}
 	}
 }

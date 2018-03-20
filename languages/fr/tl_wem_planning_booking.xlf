@@ -7,7 +7,7 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.date.1">
         <source>Enter the booking date.</source>
-        <target>Saisir la date de réservation.</target>
+        <target>Saisir la date de rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.dateEnd.0">
         <source>Date de fin</source>
@@ -15,15 +15,15 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.dateEnd.1">
         <source>Enter the booking end date.</source>
-        <target>Saisir la date de fin de la réservation.</target>
+        <target>Saisir la date de fin du rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.bookingType.0">
         <source>Booking type</source>
-        <target>Type de réservation</target>
+        <target>Type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.bookingType.1">
         <source>Select the booking type.</source>
-        <target>Sélectionner le type de réservation.</target>
+        <target>Sélectionner le type de rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.lastname.0">
         <source>Lastname</source>
@@ -63,7 +63,7 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.comments.1">
         <source>Enter booking comments.</source>
-        <target>Saisir un commentaire sur la réservation.</target>
+        <target>Saisir un commentaire sur le rendez-vous.</target>
       </trans-unit>
 
       <trans-unit id="tl_wem_planning_booking.status.0">
@@ -72,7 +72,7 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.status.1">
         <source>Select the booking status.</source>
-        <target>Sélectionner le statut de la réservation.</target>
+        <target>Sélectionner le statut du rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.status.drafted">
         <source>Drafted</source>
@@ -105,15 +105,15 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.isUpdate.1">
         <source>Check if the booking is an update.</source>
-        <target>Cocher si la réservation est une mise à jour.</target>
+        <target>Cocher si le rendez-vous est une mise à jour.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.bookingSrc.0">
         <source>Original booking</source>
-        <target>Réservation originale</target>
+        <target>Rendez-vous originale</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.bookingSrc.1">
         <source>Select the original booking of this update.</source>
-        <target>Sélectionnez la réservation originale de cette mise à jour.</target>
+        <target>Sélectionnez le rendez-vous originale de cette mise à jour.</target>
       </trans-unit>
 
       <trans-unit id="tl_wem_planning_booking.tstamp.0">
@@ -135,56 +135,73 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.source_legend">
         <source>Booking updated</source>
-        <target>Réservation mise à jour</target>
+        <target>Rendez-vous mis à jour</target>
       </trans-unit>
 
       <trans-unit id="tl_wem_planning_booking.new.0">
         <source>New booking</source>
-        <target>Nouvelle réservation</target>
+        <target>Nouveau rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.new.1">
         <source>Create a new booking</source>
-        <target>Créer un nouvelle réservation</target>
+        <target>Créer un nouveau rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.show.0">
         <source>Planning details</source>
-        <target>Détails de la réservation</target>
+        <target>Détails du rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.show.1">
         <source>Show the details of booking ID %s</source>
-        <target>Afficher les détails de la réservation ID %s</target>
+        <target>Afficher les détails du rendez-vous ID %s</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.edit.0">
         <source>Edit booking</source>
-        <target>Éditer la réservation</target>
+        <target>Éditer le rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.edit.1">
         <source>Edit booking ID %s</source>
-        <target>Éditer la réservation ID %s</target>
+        <target>Éditer le rendez-vous ID %s</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.editheader.0">
         <source>Edit booking</source>
-        <target>Éditer la réservation</target>
+        <target>Éditer le rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.editheader.1">
         <source>Edit the booking settings</source>
-        <target>Éditer les paramètres de la réservation</target>
+        <target>Éditer les paramètres du rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.copy.0">
         <source>Duplicate booking</source>
-        <target>Dupliquer la réservation</target>
+        <target>Dupliquer le rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.copy.1">
         <source>Duplicate booking ID %s</source>
-        <target>Dupliquer la réservation ID %s</target>
+        <target>Dupliquer le rendez-vous ID %s</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.delete.0">
         <source>Delete booking</source>
-        <target>Supprimer la réservation</target>
+        <target>Supprimer le rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking.delete.1">
         <source>Delete booking ID %s</source>
-        <target>Supprimer la réservation ID %s</target>
+        <target>Supprimer le rendez-vous ID %s</target>
+      </trans-unit>
+
+      <trans-unit id="tl_wem_planning_booking.confirmBooking.0">
+        <source>Confirm booking</source>
+        <target>Confirmer le rendez-vous</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_booking.confirmBooking.1">
+        <source>Confirm booking ID %s</source>
+        <target>Confirmer le rendez-vous ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_booking.denyBooking.0">
+        <source>Deny booking</source>
+        <target>Refuser le rendez-vous</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning_booking.denyBooking.1">
+        <source>Deny booking ID %s</source>
+        <target>Refuser le rendez-vous ID %s</target>
       </trans-unit>
 	</body>
   </file>

@@ -15,5 +15,5 @@
 
 /** Backend planning booking legend **/
 .tl_wem_planning_booking.legend{display:flex;justify-content:start;padding:15px;}
-.tl_wem_planning_booking.legend .item{margin-right:30px;}
-.tl_wem_planning_booking.legend .item i{float:none;margin-right:6px;font-size:12px;width:18px;height:18px;line-height:18px;}
+.tl_wem_planning_booking.legend .item{margin-right:30px;line-height:20px;}
+.tl_wem_planning_booking.legend .item i{font-size:12px;width:20px;height:20px;display:flex;flex-direction:column;justify-content:center;}

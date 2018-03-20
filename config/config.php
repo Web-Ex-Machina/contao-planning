@@ -18,11 +18,16 @@ array_insert($GLOBALS['BE_MOD']['wem_plannings'], 1, array
 		'tables'    => array('tl_wem_planning', 'tl_wem_planning_slot', 'tl_wem_planning_booking_type', 'tl_wem_planning_booking'),
 		'icon'		=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
 	),
+	'wem_booking' => array
+	(
+		'tables'    => array('tl_wem_planning_booking'),
+		'icon'		=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
+	),
 ));
 
+if ('BE' === TL_MODE) {
 // Load icon in Contao 4.2 backend
 $GLOBALS['TL_CSS'][] = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
-if ('BE' === TL_MODE) {
     if (version_compare(VERSION, '4.4', '<')) {
         $GLOBALS['TL_CSS'][] = 'system/modules/wem-contao-planning/assets/backend.css';
     } else {
@@ -66,15 +71,15 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge_recursive(
 			'update_booking' => array(
 				'recipients'           => array('user_email'),
 				'email_subject'        => array('booking_*'),
-				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink'),
-				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
 				'email_replyTo'        => array('user_email'),
 			),
 			'cancel_booking' => array(
 				'recipients'           => array('user_email'),
 				'email_subject'        => array('booking_*'),
-				'email_text'           => array('booking_*', 'bookingType_*'),
-				'email_html'           => array('booking_*', 'bookingType_*'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'adminLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'adminLink'),
 				'email_replyTo'        => array('user_email'),
 			),
 		)

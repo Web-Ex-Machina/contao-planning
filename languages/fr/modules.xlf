@@ -14,6 +14,14 @@
         <source>Manage plannings of your website</source>
         <target>Gérer les plannings de votre site.</target>
       </trans-unit>
+      <trans-unit id="MOD.wem_booking.0">
+        <source>Bookings</source>
+        <target>Rendez-vous</target>
+      </trans-unit>
+      <trans-unit id="MOD.wem_booking.1">
+        <source>Manage bookings of your website</source>
+        <target>Gérer les rendez-vous de votre site.</target>
+      </trans-unit>
       
       <trans-unit id="FMD.wem_planning">
         <source>Planning</source>

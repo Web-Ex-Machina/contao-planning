@@ -4,7 +4,7 @@
             <div class="modal-header">Formulaire de réservation</div>
             
             <div class="modal-body">
-                <p>Vous souhaitez prendre rendez-vous <strong>le <?= date('d/m/Y', $this->start) ?>, de <?= date('H:i', $this->start) ?> à <?= date('H:i', $this->stop) ?></strong> pour le sujet suivant : <strong><?= $this->bookingType['name'] ?></strong><br />Veuillez remplir le formulaire ci-dessous pour valider votre réservation.</p>
+                <p>Vous souhaitez prendre rendez-vous <strong>le <?= date('d/m/Y', $this->start) ?>, de <?= date('H:i', $this->start) ?> à <?= date('H:i', $this->stop) ?></strong> pour le sujet suivant : <strong><?= $this->bookingType['title'] ?></strong><br />Veuillez remplir le formulaire ci-dessous pour valider votre réservation.</p>
 
                 <p class="text-secondary">Ce créneau est verrouillé pour une durée d'une demi-heure. Une fois ce délai passé, il ne sera peut-être plus disponible.</p>
                 

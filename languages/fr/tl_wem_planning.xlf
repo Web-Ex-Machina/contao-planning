@@ -37,19 +37,19 @@
 
       <trans-unit id="tl_wem_planning.canUpdateBooking.0">
         <source>Can update booking</source>
-        <target>Peut modifier une réservation</target>
+        <target>Peut modifier un rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.canUpdateBooking.1">
         <source>Check if you allow booking updates.</source>
-        <target>Cochez si vous autorisez des modifications de réservations.</target>
+        <target>Cochez si vous autorisez des modifications de rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.canUpdateBookingUntil.0">
         <source>Can update book until</source>
-        <target>Peut modifier une réservation jusqu'à</target>
+        <target>Peut modifier un rendez-vous jusqu'à</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.canUpdateBookingUntil.1">
         <source>Please enter the number of hours a booking can be updated before the date.</source>
-        <target>Saisir le nombre d'heures où une réservation peut être modifiée avant sa date.</target>
+        <target>Saisir le nombre d'heures où un rendez-vous peut être modifié avant sa date.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.canUpdateBookingLimit.0">
         <source>Number of updates</source>
@@ -62,28 +62,28 @@
 
       <trans-unit id="tl_wem_planning.canCancelBooking.0">
         <source>Can cancel booking</source>
-        <target>Peut annuler une réservation</target>
+        <target>Peut annuler un rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.canCancelBooking.1">
         <source>Check if you allow booking cancels.</source>
-        <target>Cochez si vous autorisez des annulations de réservations.</target>
+        <target>Cochez si vous autorisez des annulations de rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.canCancelBookingUntil.0">
         <source>Can cancel book until</source>
-        <target>Peut annuler une réservation jusqu'à</target>
+        <target>Peut annuler un rendez-vous jusqu'à</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.canCancelBookingUntil.1">
         <source>Please enter the number of hours a booking can be canceled before the date.</source>
-        <target>Saisir le nombre d'heures où une réservation peut être annulée avant sa date.</target>
+        <target>Saisir le nombre d'heures où un rendez-vous peut être annulé avant sa date.</target>
       </trans-unit>
 
       <trans-unit id="tl_wem_planning.bookingtypes.0">
         <source>Booking type</source>
-        <target>Types de réservation</target>
+        <target>Types de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.bookingtypes.1">
         <source>Manage booking type for this planning.</source>
-        <target>Gérer les types de réservation pour ce planning.</target>
+        <target>Gérer les types de rendez-vous pour ce planning.</target>
       </trans-unit>
 
       <trans-unit id="tl_wem_planning.slots.0">
@@ -200,11 +200,11 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning.bookings.0">
         <source>See planning bookings</source>
-        <target>Voir les réservations du planning</target>
+        <target>Voir les rendez-vous du planning</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.bookings.1">
         <source>See planning bookings ID %s</source>
-        <target>Voir les réservations du planning ID %s</target>
+        <target>Voir les rendez-vous du planning ID %s</target>
       </trans-unit>
     </body>
   </file>

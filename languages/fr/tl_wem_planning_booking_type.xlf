@@ -7,7 +7,7 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.title.1">
         <source>Please enter a booking type title.</source>
-        <target>Saisir un titre de type de réservation.</target>
+        <target>Saisir un titre de type de rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.duration.0">
         <source>Duration</source>
@@ -15,7 +15,7 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.duration.1">
         <source>Enter the duration for this booking type.</source>
-        <target>Saisir la durée pour ce type de réservation.</target>
+        <target>Saisir la durée pour ce type de rendez-vous.</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.details.0">
         <source>Details</source>
@@ -23,7 +23,7 @@
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.details.1">
         <source>Enter details about this booking type.</source>
-        <target>Saisir des informations à propos de ce type de réservation.</target>
+        <target>Saisir des informations à propos de ce type de rendez-vous.</target>
       </trans-unit>
 
       <trans-unit id="tl_wem_planning_booking_type.tstamp.0">
@@ -42,51 +42,51 @@
 
       <trans-unit id="tl_wem_planning_booking_type.new.0">
         <source>New booking type</source>
-        <target>Nouveau type de réservation</target>
+        <target>Nouveau type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.new.1">
         <source>Create a new booking type</source>
-        <target>Créer un nouveau type de réservation</target>
+        <target>Créer un nouveau type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.show.0">
         <source>Planning details</source>
-        <target>Détails du type de réservation</target>
+        <target>Détails du type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.show.1">
         <source>Show the details of booking type ID %s</source>
-        <target>Afficher les détails du type de réservation ID %s</target>
+        <target>Afficher les détails du type de rendez-vous ID %s</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.edit.0">
         <source>Edit booking type</source>
-        <target>Éditer le type de réservation</target>
+        <target>Éditer le type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.edit.1">
         <source>Edit booking type ID %s</source>
-        <target>Éditer le type de réservation ID %s</target>
+        <target>Éditer le type de rendez-vous ID %s</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.editheader.0">
         <source>Edit booking type</source>
-        <target>Éditer le type de réservation</target>
+        <target>Éditer le type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.editheader.1">
         <source>Edit the booking type settings</source>
-        <target>Éditer les paramètres de le type de réservation</target>
+        <target>Éditer les paramètres de le type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.copy.0">
         <source>Duplicate booking type</source>
-        <target>Dupliquer le type de réservation</target>
+        <target>Dupliquer le type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.copy.1">
         <source>Duplicate booking type ID %s</source>
-        <target>Dupliquer le type de réservation ID %s</target>
+        <target>Dupliquer le type de rendez-vous ID %s</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.delete.0">
         <source>Delete booking type</source>
-        <target>Supprimer le type de réservation</target>
+        <target>Supprimer le type de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning_booking_type.delete.1">
         <source>Delete booking type ID %s</source>
-        <target>Supprimer le type de réservation ID %s</target>
+        <target>Supprimer le type de rendez-vous ID %s</target>
       </trans-unit>
 	</body>
   </file>
