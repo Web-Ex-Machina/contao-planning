@@ -55,6 +55,11 @@ $GLOBALS['TL_MODELS'][\WEM\Planning\Model\Planning::getTable()] = 'WEM\Planning\
 $GLOBALS['TL_MODELS'][\WEM\Planning\Model\Slot::getTable()] = 'WEM\Planning\Model\Slot';
 
 /**
+ * Cronjobs
+ */
+$GLOBALS['TL_CRON']['daily'][] = array('WEM\Planning\Cronjobs', 'sendDailyBookings');
+
+/**
  * Notification Center Notification Types
  */
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge_recursive(
@@ -81,6 +86,13 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge_recursive(
 				'email_text'           => array('booking_*', 'bookingType_*', 'adminLink'),
 				'email_html'           => array('booking_*', 'bookingType_*', 'adminLink'),
 				'email_replyTo'        => array('user_email'),
+			),
+			'daily_bookings' => array(
+				'recipients'           => array('admin_email'),
+				'email_subject'        => array('date'),
+				'email_text'           => array('bookings'),
+				'email_html'           => array('bookings'),
+				'attachment_tokens'    => array('bookings_file'),
 			),
 		)
 	)

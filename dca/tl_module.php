@@ -13,7 +13,6 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['wem_display_planning']    = '{title
 $GLOBALS['TL_DCA']['tl_module']['fields']['wem_planning'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['wem_planning'],
-	'default'                 => 'wem_portfolio_item',
 	'exclude'                 => true,
 	'inputType'               => 'select',
 	'foreignKey'              => 'tl_wem_planning.title',

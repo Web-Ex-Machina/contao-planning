@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('canUpdateBooking', 'canCancelBooking', 'protected'),
+		'__selector__'                => array('canUpdateBooking', 'canCancelBooking', 'sendDailySummary', 'protected'),
 		'default'                     => '
 			{title_legend},title,alias;
 			{default_legend},defaultOpenTime,defaultCloseTime;
@@ -107,6 +107,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning'] = array
 			{cancel_legend},canCancelBooking;
 			{bookingtypes_legend},bookingtypes;
 			{slots_legend},slots;
+			{summary_legend},sendDailySummary;
 			{protected_legend},protected
 		'
 	),
@@ -116,6 +117,7 @@ $GLOBALS['TL_DCA']['tl_wem_planning'] = array
 	(
 		'canUpdateBooking'			  => 'canUpdateBookingUntil,canUpdateBookingLimit',
 		'canCancelBooking'			  => 'canCancelBookingUntil',
+		'sendDailySummary'			  => 'dailySummaryNotification',
 		'protected'                   => 'groups',
 	),
 
@@ -267,6 +269,25 @@ $GLOBALS['TL_DCA']['tl_wem_planning'] = array
 		    ),
 		),
 
+		'sendDailySummary' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning']['sendDailySummary'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'inputType'               => 'checkbox',
+			'eval'                    => array('submitOnChange'=>true),
+			'sql'                     => "char(1) NOT NULL default ''"
+		),
+		'dailySummaryNotification' => array
+		(
+			'label'                     => &$GLOBALS['TL_LANG']['tl_wem_planning']['dailySummaryNotification'],
+			'exclude'                   => true,
+			'inputType'                 => 'select',
+			'options_callback'          => array('tl_wem_planning', 'getNotificationChoices'),
+			'eval'                      => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'clr'),
+			'sql'                       => "int(10) unsigned NOT NULL default '0'"
+		),
+
 		'protected' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_wem_planning']['protected'],
@@ -367,4 +388,21 @@ class tl_wem_planning extends Backend
 
 		return $strHtml;
 	}
+
+	/**
+     * Get notification choices
+     *
+     * @return array
+     */
+    public function getNotificationChoices()
+    {
+        $arrChoices = array();
+        $objNotifications = \Database::getInstance()->execute("SELECT id,title FROM tl_nc_notification WHERE type='daily_bookings' ORDER BY title");
+
+        while ($objNotifications->next()) {
+            $arrChoices[$objNotifications->id] = $objNotifications->title;
+        }
+
+        return $arrChoices;
+    }
 }

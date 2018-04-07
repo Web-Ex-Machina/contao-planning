@@ -30,6 +30,14 @@
         <source>Notification who'll be sent on a booking cancelation</source>
         <target>Notification envoyée lors d'une annulation de rendez-vous</target>
       </trans-unit>
+      <trans-unit id="tl_nc_notification.type.daily_bookings.0">
+        <source>Daily summary</source>
+        <target>Récapitulatif quotidien</target>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.daily_bookings.1">
+        <source>Notification who'll be sent every day, summering the confirmed bookings</source>
+        <target>Notification envoyée chaque jour, résumant les réservations confirmées</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

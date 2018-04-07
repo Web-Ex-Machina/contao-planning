@@ -94,6 +94,23 @@
         <source>Manage planning slots.</source>
         <target>Gérer les créneaux du planning.</target>
       </trans-unit>
+
+      <trans-unit id="tl_wem_planning.sendDailySummary.0">
+        <source>Send a daily summary</source>
+        <target>Envoyer un récapitulatif quotidien</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.sendDailySummary.1">
+        <source>Check to send a daily summary of the confirmed bookings.</source>
+        <target>Cocher pour envoyer un résumé quotidien des réservations confirmées.</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.dailySummaryNotification.0">
+        <source>Notification</source>
+        <target>Notification</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.dailySummaryNotification.1">
+        <source>Please select the notification to use for the daily summaries.</source>
+        <target>Sélectionnez la notification à utiliser pour les récapitulatifs quotidiens.</target>
+      </trans-unit>
       
       <trans-unit id="tl_wem_planning.protected.0">
         <source>Protect planning</source>
@@ -144,6 +161,10 @@
       <trans-unit id="tl_wem_planning.slots_legend">
         <source>Slots</source>
         <target>Créneaux</target>
+      </trans-unit>
+      <trans-unit id="tl_wem_planning.summary_legend">
+        <source>Summary Settings</source>
+        <target>Paramètres du récapitulatif</target>
       </trans-unit>
       <trans-unit id="tl_wem_planning.protected_legend">
         <source>Access protection</source>
