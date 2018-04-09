@@ -14,6 +14,8 @@ use \RuntimeException as Exception;
 use Contao\Date;
 use Contao\Input;
 use Contao\Validator;
+
+use WEM\Planning\Controller\Core;
 use WEM\Planning\Model\Planning;
 use WEM\Planning\Model\BookingType;
 use WEM\Planning\Model\Slot;
@@ -26,32 +28,6 @@ use WEM\Planning\Model\Booking;
  */
 abstract class ModulePlanning extends \Module
 {
-	/**
-	 * Find Booking Types for the current planning
-	 * @return [Array] [Booking Types Array]
-	 */
-	protected function findBookingTypes()
-	{
-		try
-		{
-			if(!$objBookingTypes = BookingType::findItems(["pid"=>$this->wem_planning]))
-				throw new Exception(sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['noBookingTypesFound'], $this->wem_planning));
-
-			$arrData = array();
-
-			while($objBookingTypes->next())
-			{
-				$arrData[$objBookingTypes->id] = $objBookingTypes->row();
-			}
-
-			return $arrData;
-		}
-		catch(Exception $e)
-		{
-			throw $e;
-		}
-	}
-
 	/**
 	 * Find Slots for the current planning
 	 * @return [Array] [Slots Array]
@@ -284,7 +260,7 @@ abstract class ModulePlanning extends \Module
 
 			// Retrieve Booking Types if they doesn't exists
 			if(!$this->bookingTypes)
-				$this->bookingTypes = $this->findBookingTypes();
+				$this->bookingTypes = Core::findBookingTypes($this->wem_planning);
 
 			// Then, retrieve the duration we need
 			foreach($this->bookingTypes as $arrBooking)
@@ -546,7 +522,7 @@ abstract class ModulePlanning extends \Module
 						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingCreationError']);
 
 					// Fetch the notifications to send
-					$this->sendNotifications('confirm_booking', $objBooking);
+					Core::sendNotifications('pending_booking', $objBooking);
 
 					// And prepare the response
 					$arrResponse['status'] = 'success';
@@ -616,7 +592,7 @@ abstract class ModulePlanning extends \Module
 						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingUpdateError']);
 
 					// Fetch the notifications to send
-					$this->sendNotifications('update_booking', $objNewBooking);
+					Core::sendNotifications('update_booking', $objNewBooking);
 
 					// And build the answer
 					$arrResponse['status'] = 'success';
@@ -643,7 +619,7 @@ abstract class ModulePlanning extends \Module
 						throw new Exception($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['bookingCancelError']);
 
 					// Fetch the notifications to send
-					$this->sendNotifications('cancel_booking', $objBooking);
+					Core::sendNotifications('cancel_booking', $objBooking);
 
 					// And build the answer
 					$arrResponse['status'] = 'success';
@@ -689,75 +665,7 @@ abstract class ModulePlanning extends \Module
 		die;
 	}
 
-	/**
-	 * Fetch, prepare and send Planning Notifications
-	 * @param  [String] $strNotificationType [Notification type]
-	 * @param  [Object] $objBooking          [Booking Model]
-	 */
-	protected function sendNotifications($strNotificationType, $objBooking)
-	{
-		try
-		{
-			// Fetch the notifications to send
-			$objNotifications = \Database::getInstance()->execute("SELECT id,title FROM tl_nc_notification WHERE type='$strNotificationType' ORDER BY title");
-
-			if($objNotifications->count() > 0)
-			{
-				$arrTokens = $this->prepareNotificationTokens($objBooking);
-
-				while($objNotifications->next())
-				{
-					$objNotification = \NotificationCenter\Model\Notification::findByPk($objNotifications->id);
-					$objNotification->send($arrTokens);
-				}
-			}
-		}
-		catch(Exception $e)
-		{
-			throw $e;
-		}
-	}
-
-	/**
-	 * Prepare notifications tokens
-	 * @param  [Object] $objBooking [Booking Model]
-	 * @return [Array]              [Tokens Array]
-	 */
-	protected function prepareNotificationTokens($objBooking)
-	{
-		try
-		{
-			// Prepare tokens
-			$arrTokens = array();
-
-			// Booking tokens
-			foreach($objBooking->row() as $strKey => $varValue)
-				$arrTokens["booking_".$strKey] = $varValue;
-
-			// Parse date tokens
-			$arrTokens["booking_day"] = date('d/m/Y', $objBooking->date);
-			$arrTokens["booking_hourStart"] = date('H:i', $objBooking->date);
-			$arrTokens["booking_hourEnd"] = date('H:i', $objBooking->dateEnd);
-
-			// Booking Type tokens
-			foreach($this->bookingTypes[$objBooking->bookingType] as $strKey => $varValue)
-				$arrTokens["bookingType_".$strKey] = $varValue;
-
-			// Build the update/cancel link
-			$strRequest = \Environment::get('base').\Environment::get('request');
-			$arrTokens['updateLink'] = $strRequest.'?update='.$objBooking->token;
-			$arrTokens['cancelLink'] = $strRequest.'?cancel='.$objBooking->token;
-
-			// Build the recipients
-			$arrTokens['user_email'] = $objBooking->email;
-
-			return $arrTokens;
-		}
-		catch(Exception $e)
-		{
-			throw $e;
-		}
-	}
+	
 
 	/**
 	 * Validate Booking Input sent

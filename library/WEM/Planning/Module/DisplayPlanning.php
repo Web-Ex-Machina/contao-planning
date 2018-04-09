@@ -16,6 +16,7 @@ use Patchwork\Utf8;
 use Contao\Date;
 use Contao\Input;
 use Contao\System;
+use WEM\Planning\Controller\Core;
 use WEM\Planning\Model\Planning;
 use WEM\Planning\Model\Booking;
 
@@ -67,6 +68,7 @@ class DisplayPlanning extends ModulePlanning
 			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 			<link rel="stylesheet" href="system/modules/wem-contao-planning/assets/vendor/fullcalendar/3.8.2/fullcalendar.min.css">
+			<link rel="stylesheet" href="system/modules/wem-contao-planning/assets/vendor/icalendar/jquery.icalendar.css">
 			<script src="system/modules/wem-contao-planning/assets/vendor/fullcalendar/3.8.2/lib/jquery.min.js"></script>
 			<script src="system/modules/wem-contao-planning/assets/vendor/fullcalendar/3.8.2/lib/jquery-ui.min.js"></script>
 			<script src="system/modules/wem-contao-planning/assets/vendor/fullcalendar/3.8.2/lib/moment.min.js"></script>
@@ -75,6 +77,7 @@ class DisplayPlanning extends ModulePlanning
 			<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 			<script src="system/modules/wem-contao-planning/assets/vendor/fullcalendar/3.8.2/fullcalendar.min.js"></script>
 			<script src="system/modules/wem-contao-planning/assets/vendor/fullcalendar/3.8.2/locale/fr.js"></script>
+			<script src="system/modules/wem-contao-planning/assets/vendor/icalendar/jquery.icalendar.js"></script>
 			<script src="system/modules/wem-contao-planning/assets/js/calendar_functions.js"></script>
 		';
 
@@ -109,6 +112,7 @@ class DisplayPlanning extends ModulePlanning
 		 * A l'annulation d'un rendez-vous, reload sur l'URL de base
 		 * Masque qui invite à Fast Travel vers une date : L'agencer mieux pour qu'il ne soit pas autant "gros"
 		 * Réduire la vue globale du calendrier
+		 * Designer les icônes Google Agenda ou à iCal dans le récapitulatif
 		 */	
 		
 		/**
@@ -120,10 +124,10 @@ class DisplayPlanning extends ModulePlanning
 		 * IMPROVEMENTS
 		 * Ajouter une configuration du "Combien de temps on peut réserver", actuellement, on ne peut pas réserver moins de 24h à l'avance.
 		 * Ajouter une configuration du "Combien de temps dure un slot", actuellement, on a décidé que ce serait 30 minutes mais voilà.
+		 * Ajouter une configuration pour personnaliser les intitulés Google Calendar / iCal
 		 * Ajouter de la configuration de FullCalendar directement dans le planning, genre "business hours" ou "weekends", ou les couleurs des eventsSources.
 		 * Ajouter la possibilité d'avoir un mode "Connexion obligatoire" pour réserver
 		 * Ajouter la possibilité d'avoir accès à ses rendez-vous via un compte utilisateur
-		 * Ajouter la possibilité d'ajouter ledit rendez-vous à Google Agenda ou à iCal, depuis l'email ou depuis le récapitulatif
 		 * Ajouter une synchronisation des rendez-vous à Google Agenda / iCal de l'administrateur
 		 */
 
@@ -146,7 +150,7 @@ class DisplayPlanning extends ModulePlanning
 				throw new Exception(sprintf($GLOBALS['TL_LANG']['WEM']['PLANNING']['ERR']['planningNotFound'], $this->wem_planning));
 
 			// Get planning booking types
-			$this->bookingTypes = $this->findBookingTypes();
+			$this->bookingTypes = Core::findBookingTypes($this->wem_planning);
 
 			// Adjust view type if we post one
 			if(Input::post("viewType") && in_array(Input::post("viewType"), $this->viewTypes))

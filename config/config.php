@@ -20,8 +20,10 @@ array_insert($GLOBALS['BE_MOD']['wem_plannings'], 1, array
 	),
 	'wem_booking' => array
 	(
-		'tables'    => array('tl_wem_planning_booking'),
-		'icon'		=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
+		'tables'    		=> array('tl_wem_planning_booking'),
+		'confirmBooking' 	=> array('WEM\Planning\Backend\Booking', 'confirmBooking'),
+		'denyBooking' 		=> array('WEM\Planning\Backend\Booking', 'denyBooking'),
+		'icon'				=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
 	),
 ));
 
@@ -66,18 +68,25 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge_recursive(
 	(array) $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'],
 	array(
 		'wem_planning' => array(
+			'pending_booking' => array(
+				'recipients'           => array('user_email'),
+				'email_subject'        => array('booking_*'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
+				'email_replyTo'        => array('user_email'),
+			),
 			'confirm_booking' => array(
 				'recipients'           => array('user_email'),
 				'email_subject'        => array('booking_*'),
-				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
-				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
 				'email_replyTo'        => array('user_email'),
 			),
 			'update_booking' => array(
 				'recipients'           => array('user_email'),
 				'email_subject'        => array('booking_*'),
-				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
-				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'cancelLink', 'adminLink'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
 				'email_replyTo'        => array('user_email'),
 			),
 			'cancel_booking' => array(
@@ -85,6 +94,13 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge_recursive(
 				'email_subject'        => array('booking_*'),
 				'email_text'           => array('booking_*', 'bookingType_*', 'adminLink'),
 				'email_html'           => array('booking_*', 'bookingType_*', 'adminLink'),
+				'email_replyTo'        => array('user_email'),
+			),
+			'deny_booking' => array(
+				'recipients'           => array('user_email'),
+				'email_subject'        => array('booking_*'),
+				'email_text'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
+				'email_html'           => array('booking_*', 'bookingType_*', 'updateLink', 'adminLink'),
 				'email_replyTo'        => array('user_email'),
 			),
 			'daily_bookings' => array(
@@ -97,3 +113,15 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] = array_merge_recursive(
 		)
 	)
 );
+
+/**
+ * Mini script to trigger cronjobs manually
+ */
+if(Input::get('cron') != '' && Input::get('do') == 'wem_booking')
+{
+	$blnDebug = true;
+	if(0 === (int)Input::get('cronDebug'))
+		$blnDebug = false;
+
+	$objCron = new WEM\Planning\Cronjobs(Input::get('cron'), $blnDebug);
+}

@@ -291,19 +291,24 @@ if(Input::get('do') == 'wem_booking')
 		'label'               => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['confirmBooking'],
 		'href'                => 'key=confirmBooking',
 		'icon'                => 'system/modules/wem-contao-planning/assets/icon_confirmed.png',
-		'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['WEM']['PLANNING']['BE']['confirmBooking'] . '\'))return false;Backend.getScrollOffset()"'
+		'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['WEM']['PLANNING']['BE']['confirmBooking'] . '\'))return false;Backend.getScrollOffset()"',
+		'button_callback'	  => array('tl_wem_planning_booking', 'checkStatus'),
 	);
 	$GLOBALS['TL_DCA']['tl_wem_planning_booking']['list']['operations']['deny'] = array
 	(
 		'label'               => &$GLOBALS['TL_LANG']['tl_wem_planning_booking']['denyBooking'],
 		'href'                => 'key=denyBooking',
 		'icon'                => 'system/modules/wem-contao-planning/assets/icon_denied.png',
-		'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['WEM']['PLANNING']['BE']['denyBooking'] . '\'))return false;Backend.getScrollOffset()"'
+		'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['WEM']['PLANNING']['BE']['denyBooking'] . '\'))return false;Backend.getScrollOffset()"',
+		'button_callback'	  => array('tl_wem_planning_booking', 'checkStatus'),
 	);
 
 	// Add the messages
-	\Message::addInfo(sprintf("Vous avez %s rendez-vous à traiter", \WEM\Planning\Model\Booking::countBy("status", "pending")));
-	\Message::addConfirmation(sprintf("Vous avez %s rendez-vous à venir", \WEM\Planning\Model\Booking::countBy("status", "confirmed")));
+	if(!Input::get('key'))
+	{
+		\Message::addInfo(sprintf("Vous avez %s rendez-vous à traiter", \WEM\Planning\Model\Booking::countBy("status", "pending")));
+		\Message::addConfirmation(sprintf("Vous avez %s rendez-vous à venir", \WEM\Planning\Model\Booking::countBy("status", "confirmed")));
+	}
 }
 
 /**
@@ -320,6 +325,16 @@ class tl_wem_planning_booking extends Backend
 	{
 		parent::__construct();
 		$this->import('BackendUser', 'User');
+	}
+
+	public function checkStatus($row, $href, $label, $title, $icon, $attributes)
+	{
+		if($row['status'] != 'pending' || $row['date'] < time())
+			return '';
+		
+		$href .= '&id='.$row['id'];
+		
+		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a>';
 	}
 
 	/**

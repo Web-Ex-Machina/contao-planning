@@ -47,8 +47,10 @@
 			<?php endif; ?>
 		</div>
 	</div>
-	
+
 	<div class="text-right">
+		<div id="syncWithCals"></div>
+
 		<?php if($this->canUpdate): ?>
 		<button type="button" class="btn btn-lg btn-success confirmUpdate">Valider mes modifications</button>
 		<?php else: ?>
@@ -149,8 +151,17 @@
 
 <script type="text/javascript">
 	var calendar;
+	var objBooking = {
+		start: new Date(<?= date('Y, m-m, d, H, i, s', $this->booking->date) ?>)
+		,end: new Date(<?= date('Y, m-m, d, H, i, s', $this->booking->dateEnd) ?>)
+		,title: "<?= $this->bookingType['title'] ?> - <?= Config::get('websiteTitle') ?>"
+		,description: ""
+		,location: ""
+	};
 	var objOldBooking = <?= json_encode($this->booking->row()) ?>;
 	$(document).ready(function(){
+		$('#syncWithCals').icalendar($.extend({compact: true}, objBooking));
+
 		calendarDefaultConfig.eventSources[0].data.currentBooking = <?= $this->booking->id ?>;
 		calendarDefaultConfig.eventSources[1].data.currentBooking = <?= $this->booking->id ?>;
 		

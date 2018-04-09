@@ -5,7 +5,15 @@
         <source>Planning Notifications</source>
         <target>Notifications du planning</target>
       </trans-unit>
-
+      
+      <trans-unit id="tl_nc_notification.type.pending_booking.0">
+        <source>Pending booking</source>
+        <target>Prise de rendez-vous</target>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.pending_booking.1">
+        <source>Notification who'll be sent on a pending confirmation</source>
+        <target>Notification envoyée lors d'une prise de rendez-vous</target>
+      </trans-unit>
       <trans-unit id="tl_nc_notification.type.confirm_booking.0">
         <source>Confirm booking</source>
         <target>Confirmation de rendez-vous</target>
@@ -29,6 +37,14 @@
       <trans-unit id="tl_nc_notification.type.cancel_booking.1">
         <source>Notification who'll be sent on a booking cancelation</source>
         <target>Notification envoyée lors d'une annulation de rendez-vous</target>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.deny_booking.0">
+        <source>Deny Booking</source>
+        <target>Refus de rendez-vous</target>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.deny_booking.1">
+        <source>Notification who'll be sent on a deny cancelation</source>
+        <target>Notification envoyée lors d'un refus de rendez-vous</target>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.daily_bookings.0">
         <source>Daily summary</source>

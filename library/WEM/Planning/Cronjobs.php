@@ -12,11 +12,12 @@ namespace WEM\Planning;
 
 use Exception;
 
+use Contao\Config;
 use Contao\Date;
 use Contao\Controller;
 use Contao\System;
 
-use \NotificationCenter\Model\Notification;
+use NotificationCenter\Model\Notification;
 
 use WEM\Planning\Model\Planning;
 use WEM\Planning\Model\Booking;
@@ -27,6 +28,27 @@ use WEM\Planning\Model\BookingType;
  */
 class Cronjobs extends Controller
 {
+	public function __construct($strFunction, $blnDebug = true)
+	{
+		try
+		{
+			if(TL_MODE != "BE")
+				throw new Exception("Le mode debug des tâches CRON n'est accessible que depuis le backend");
+
+			if(!method_exists($this, $strFunction))
+				throw new Exception(sprintf("La fonction %s n'existe pas", $strFunction));
+
+			$this->blnDebug = $blnDebug;
+			$this->$strFunction();
+			
+			\System::log(sprintf("Test de la fonction %s", $strFunction), __METHOD__, TL_CRON);
+		}
+		catch(Exception $e)
+		{
+			\System::log("Cron - Debug mode error : ".$e->getMessage(), __METHOD__, TL_CRON);
+		}
+	}
+
 	/**
 	 * Daily Cronjob - Send Daily Bookings to the administrator, in the email, and in PDF to print purpose
 	 */
@@ -43,8 +65,8 @@ class Cronjobs extends Controller
 
 			// Configure the range dates
 			$objDate = new Date();
-			$intStart = $objDate->dayBegin();
-			$intStop = $objDate->dayEnd();
+			$intStart = $objDate->dayBegin;
+			$intStop = $objDate->dayEnd;
 
 			// Get the bookings
 			while($objPlannings->next())
@@ -65,7 +87,7 @@ class Cronjobs extends Controller
 
 				// Prepare the tokens Array
 				$arrTokens = array(
-					"admin_email" => $GLOBALS['TL_ADMIN_EMAIL'],
+					"admin_email" => Config::get('adminEmail'),
 					"date" => Date::parse(Config::get('datimFormat'), $intStart),
 					"bookings" => '',
 					"bookings_file" => '' 
@@ -103,12 +125,20 @@ class Cronjobs extends Controller
 					$strLines .= '</td></tr>';
 				}
 
-				$strBookings = sprintf($strPattern, $strLines);
+				$arrTokens['bookings'] = sprintf($strPattern, $strLines);
+
+				if($this->blnDebug)
+					dump($arrTokens);
+				else if(!$objNotification->send($arrTokens))
+					throw new Exception(sprintf("La notification ID %s n'a pas été envoyée !", $objNotification->id));
 			}
 		}
 		catch(Exception $e)
 		{
-			System::log("Error : ".$e->getMessage(), __METHOD__, TL_CRON);
+			if($this->blnDebug)
+				dump("Error : ".$e->getMessage());
+			else
+				System::log("Error : ".$e->getMessage(), __METHOD__, TL_CRON);
 		}
 	}
 }
