@@ -7,7 +7,8 @@ Functionnalities
 -------------------
  * Configure plannings as many as you want.
  * Configure booking slots and types, depends on your activity
- * Manage bookings and send automatic reminders to customers
+ * Manage bookings and send automatic reminders to admins & customers
+ * Allow users to update/cancel their bookings
  * Export planning for the day, week, month
  * Sync with iCal or Google Agenda
 
