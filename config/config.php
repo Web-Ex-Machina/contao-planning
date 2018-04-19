@@ -11,20 +11,23 @@
 /**
  * Back end modules
  */
-array_insert($GLOBALS['BE_MOD']['wem_plannings'], 1, array
+array_insert($GLOBALS['BE_MOD'], 1, array
 (
-	'wem_planning' => array
+	'wem_plannings' => array
 	(
-		'tables'    => array('tl_wem_planning', 'tl_wem_planning_slot', 'tl_wem_planning_booking_type', 'tl_wem_planning_booking'),
-		'icon'		=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
-	),
-	'wem_booking' => array
-	(
-		'tables'    		=> array('tl_wem_planning_booking'),
-		'confirmBooking' 	=> array('WEM\Planning\Backend\Booking', 'confirmBooking'),
-		'denyBooking' 		=> array('WEM\Planning\Backend\Booking', 'denyBooking'),
-		'icon'				=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
-	),
+		'wem_planning' => array
+		(
+			'tables'    => array('tl_wem_planning', 'tl_wem_planning_slot', 'tl_wem_planning_booking_type', 'tl_wem_planning_booking'),
+			'icon'		=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
+		),
+		'wem_booking' => array
+		(
+			'tables'    		=> array('tl_wem_planning_booking'),
+			'confirmBooking' 	=> array('WEM\Planning\Backend\Booking', 'confirmBooking'),
+			'denyBooking' 		=> array('WEM\Planning\Backend\Booking', 'denyBooking'),
+			'icon'				=> 'system/modules/wem-contao-planning/assets/icon_planning.png'
+		),
+	)
 ));
 
 if ('BE' === TL_MODE) {
