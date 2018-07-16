@@ -1,5 +1,2 @@
 # DEV FILES
 sftp-config.json 
-
-# Ignore all assets/vendor libraries
-assets/vendor
